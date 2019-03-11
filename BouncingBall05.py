@@ -1,7 +1,7 @@
 import sys
 sys.path.append("../pygame-cdkk")
 import random
-from PyGameApp import *
+from cdkkPyGameApp import *
 
 ### --------------------------------------------------
 

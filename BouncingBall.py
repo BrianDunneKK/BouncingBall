@@ -3,7 +3,7 @@
 import random
 import sys
 sys.path.append("../pygame-cdkk")
-from PyGameApp import *
+from cdkkPyGameApp import *
 
 ### --------------------------------------------------
 
@@ -132,7 +132,7 @@ class Manager_Scoreboard(SpriteManager):
         self.add(Sprite_TextBox("Balls Left"))
         self.sprite("Balls Left").setup_text(36, "black", "Balls Left: {0}")
         self.sprite("Balls Left").set_text(0)
-        self.sprite("Balls Left").rect.midright = (limits.width * 0.95, limits.height * 0.05)
+        self.sprite("Balls Left").rect.midright = (limits.width * 0.85, limits.height * 0.05)
 
         self._game_over = Sprite_TextBox("Game Over")
         self._game_over.setup_text(72, "red3")
