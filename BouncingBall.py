@@ -1,9 +1,8 @@
-# To Do: Scoreboard items cropped. Game Over off centre
-
 import random
 import sys
 sys.path.append("../pygame-cdkk")
 from cdkkPyGameApp import *
+from cdkkSpriteExtra import *
 
 ### --------------------------------------------------
 
@@ -82,22 +81,21 @@ class Manager_Ball(SpriteManager):
 ### --------------------------------------------------
 
 class Sprite_Bat (Sprite_Animation):
-    def __init__(self, value, limits, filename):
+    def __init__(self, value, limits):
         super().__init__(str(value))
-        self.load_image(filename)
-        self.rect.centerx = limits.width/2
-        self.rect.top = limits.height * 0.9
         self.load_animation("Anim Bat", "Images\\bat{0:03d}.png", 7)
         self.set_animation("Anim Bat", ANIMATE_SHUTTLE)
+        self.rect.centerx = limits.width/2
+        self.rect.top = limits.height * 0.9
         self.rect.add_limit(Physics_Limit(limits, LIMIT_KEEP_INSIDE, AT_LIMIT_X_HOLD_POS_X))
         self.rect.go()
 
 ### --------------------------------------------------
 
 class Manager_Bat(SpriteManager):
-    def __init__(self, filename, limits, name = "Bat Manager"):
+    def __init__(self, limits, name = "Bat Manager"):
         super().__init__(name)
-        self.add(Sprite_Bat("Bat", limits, filename))
+        self.add(Sprite_Bat("Bat", limits))
 
     def event(self, e):
         dealt_with = False
@@ -115,28 +113,28 @@ class Manager_Bat(SpriteManager):
 class Manager_Scoreboard(SpriteManager):
     def __init__(self, game_time, limits, name = "Scoreboard Manager"):
         super().__init__(name)
-        self._score = 0
         self._game_time = game_time
 
-        self.add(Sprite_TextBox("Score"))
-        self.sprite("Score").setup_text(36, "black", "Score: {0}")
+        text_style = {"fillcolour":None, "outlinecolour":None, "align_horiz":"L", "width":200, "height":35}
+
+        self._score = Sprite_TextBox("Score", style=text_style)
+        self._score.set_text_format("Score: {0}", 0)
+        self._score.rect.midleft = (limits.width * 0.1, limits.height * 0.05)
+        self.add(self._score)
         self.score = 0
-        self.sprite("Score").rect.midleft = (limits.width * 0.05, limits.height * 0.05)
-
+        
         self._timer = Timer(self._game_time, EVENT_GAME_TIMER_1)
-        self.add(Sprite_TextBox("Time Left"))
-        self.sprite("Time Left").setup_text(36, "black", "Time Left: {0:0.1f}")
-        self.sprite("Time Left").set_text(0)
-        self.sprite("Time Left").rect.center = (limits.width * 0.45, limits.height * 0.05)
+        self._time_left =  Sprite_TextBox("Time Left", style=text_style)
+        self._time_left.set_text_format("Time Left: {0:0.1f}", 0)
+        self._time_left.rect.center = (limits.width * 0.45, limits.height * 0.05)
+        self.add(self._time_left)
 
-        self.add(Sprite_TextBox("Balls Left"))
-        self.sprite("Balls Left").setup_text(36, "black", "Balls Left: {0}")
-        self.sprite("Balls Left").set_text(0)
-        self.sprite("Balls Left").rect.midright = (limits.width * 0.85, limits.height * 0.05)
+        self._balls_left = Sprite_TextBox("Balls Left", style=text_style)
+        self._balls_left.set_text_format("Balls Left: {0}", 0)
+        self._balls_left.rect.midright = (limits.width * 0.85, limits.height * 0.05)
+        self.add(self._balls_left)
 
-        self._game_over = Sprite_TextBox("Game Over")
-        self._game_over.setup_text(72, "red3")
-        self._game_over.text = "Game Over"
+        self._game_over = Sprite_GameOver(limits)
         self._game_over.rect.center = (limits.width * 0.5, limits.height * 0.5)
 
     @property
@@ -164,7 +162,6 @@ class Manager_Scoreboard(SpriteManager):
                 self.remove(self._game_over) # Hide Game Over
         return False
 
-
 ### --------------------------------------------------
 
 class BouncingBallApp(PyGameApp):
@@ -174,7 +171,7 @@ class BouncingBallApp(PyGameApp):
         pygame.display.set_caption("Bouncing Ball")
         self.background_fill = "burlywood"
         self.add_sprite_mgr(Manager_Ball(3, 10, self.boundary))
-        self.add_sprite_mgr(Manager_Bat("Images\\bat128x10.png", self.boundary))
+        self.add_sprite_mgr(Manager_Bat(self.boundary))
         self.add_sprite_mgr(Manager_Scoreboard(15, self.boundary))
         self.event_mgr.keyboard_event(pygame.K_q, "Quit")
         self.event_mgr.keyboard_event(pygame.K_r, "StartGame")
