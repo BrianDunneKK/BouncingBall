@@ -8,10 +8,10 @@ from cdkkPyGameApp import *
 class Sprite_Bat (Sprite):
     def __init__(self, value, limits, filename):
         super().__init__(str(value))
-        self.load_image(filename)
+        self.load_image_from_file(filename)
         self.rect.centerx = limits.width/2
         self.rect.top = limits.height * 0.9
-        self.load_image("Images\\bat000.png")
+        self.load_image_from_file("Images\\bat000.png")
         self.rect.add_limit(Physics_Limit(limits, LIMIT_KEEP_INSIDE, AT_LIMIT_X_HOLD_POS_X))
         self.rect.go()
 

@@ -1,20 +1,24 @@
-import random
 import sys
 sys.path.append("../pygame-cdkk")
+import random
 from cdkkPyGameApp import *
 
 ### --------------------------------------------------
 
 class Sprite_Ball(Sprite):
-    def __init__(self, limits):
-        super().__init__("")        
-        self.load_image("Images\\ball_red.png")
-        speed = random.randint(5, 20)
-        self.rect.set_velocity(speed, speed)
+    files = ["ball_red.png", "ball_yellow.png", "ball_green.png", "ball_brown.png", "ball_blue.png", "ball_pink.png", "ball_black.png"]
+
+    def __init__(self, value, limits):
+        super().__init__(str(value))        
+        self.value = value
+        self.load_image_from_file("Images\\"+self.files[value-1])
+        self.rect.left = random.randint(0,limits.width-self.rect.width)
+        self.rect.top = random.randint(0,limits.height-self.rect.height)
+        self.rect.set_speed_angle(value + 5, random.randint(45, 135))
         self.rect.bounce_cor = self.rect.perfect_bounce
         self.rect.add_limit(Physics_Limit(limits, LIMIT_KEEP_INSIDE, AT_LIMIT_BOUNCE))
         self.rect.go()
-    
+
     def update(self):
         self.rect.move_physics()
 
@@ -29,8 +33,15 @@ class Manager_Ball(SpriteManager):
 
     def add_balls(self):
         while (len(self.sprites()) < self._total):
-            ball = Sprite_Ball(self._limits)
+            value = random.randint(1,len(Sprite_Ball.files))
+            ball = Sprite_Ball(value, self._limits)
             self.add(ball)
+
+    def update(self):
+        super().update()
+        sprite_collisions = self.find_collisions()
+        for sprite, rect in sprite_collisions:
+            sprite.rect.dynamic_limit(Physics_Limit(rect, LIMIT_COLLISION, AT_LIMIT_BOUNCE))
 
 ### --------------------------------------------------
 

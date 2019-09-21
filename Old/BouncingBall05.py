@@ -14,7 +14,7 @@ class Sprite_Ball(Sprite):
     def __init__(self, value, limits):
         super().__init__(str(value))        
         self.value = value
-        self.load_image("Images\\"+self.files[value-1])
+        self.load_image_from_file("Images\\"+self.files[value-1])
         self.rect.left = random.randint(limits.width * 0.2, limits.width * 0.8)
         self.rect.set_speed_angle(value * 3 + 5, random.randint(45, 135))
         self.rect.bounce_cor = self.rect.perfect_bounce
@@ -73,10 +73,10 @@ class Manager_Ball(SpriteManager):
 class Sprite_Bat (Sprite):
     def __init__(self, value, limits, filename):
         super().__init__(str(value))
-        self.load_image(filename)
+        self.load_image_from_file(filename)
         self.rect.centerx = limits.width/2
         self.rect.top = limits.height * 0.9
-        self.load_image("Images\\bat000.png")
+        self.load_image_from_file("Images\\bat000.png")
         self.rect.add_limit(Physics_Limit(limits, LIMIT_KEEP_INSIDE, AT_LIMIT_X_HOLD_POS_X))
         self.rect.go()
 
