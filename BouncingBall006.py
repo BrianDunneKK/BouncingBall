@@ -1,7 +1,7 @@
 # The app_config dictionary now prevents the game from automatically starting.
 # The Manager_Ball class has a new key map to start the game. The action
 # "StartGame" is one of the predined actions. Others include "Quit", "GameOver"
-#  and "UpdateScore".
+# and "UpdateScore".
 # The Sprite_Ball class only executes go() when the game starts.
 
 import cdkk
