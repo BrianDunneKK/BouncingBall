@@ -1,7 +1,3 @@
-# The Sprite_Ball nows posts a new "Boundary" event when it hits the window
-# boundary. The event includes a unique ID for the ball.
-# The Manager_Ball class deals with this event by deleting the ball.
-
 import cdkk
 import pygame
 import random

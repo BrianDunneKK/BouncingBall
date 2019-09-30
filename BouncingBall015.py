@@ -1,8 +1,3 @@
-# The score now works properly. The Sprite_Ball stores its value. The
-# check_bat_hits() method sets a new event to update te score each time a hit
-# occurs. This event is dealt with by the Manager_Scoreboard class which updates
-# the score.
-
 import cdkk
 import pygame
 import random

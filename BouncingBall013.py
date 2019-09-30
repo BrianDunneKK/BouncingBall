@@ -1,8 +1,3 @@
-# The game is chnaged so that there are 3 balls at a time and a total of 10
-# balls. The Manager_Ball class has a mew add_balls() method that creates
-# Sprite_Ball objects. It is called when Manager_Ball is created and each time a
-# ball hits the bottom boundary.
-
 import cdkk
 import pygame
 import random

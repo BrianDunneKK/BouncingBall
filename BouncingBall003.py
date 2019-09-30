@@ -1,7 +1,3 @@
-# This code does exactly the same as the previous code, except that the code
-# for the ball sprite has been moved into its own class.
-# The extra comments are just to make the code easier to read.
-
 import cdkk
 
 # --------------------------------------------------

@@ -1,8 +1,3 @@
-# A new update() method in Manager_Ball checks for collisions between the balls
-# and causes them to bounce off each other. A new Manager_Court is added to draw
-# a boundary around the game, instead of using the window. Adjust the scoreboard
-# items positions.
-
 import cdkk
 import pygame
 import random

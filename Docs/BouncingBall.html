@@ -1,0 +1,2682 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Bouncing Ball</title>
+    <meta name="author" content="CoderDojo Kilkenny">
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    <style>
+        td {
+            vertical-align: top;
+        }
+
+        h2 {
+            margin-block-start: 0.1em;
+        }
+
+        #selectable .ui-selecting {
+            background: #FECA40;
+        }
+
+        #selectable .ui-selected {
+            background: #F39814;
+            color: white;
+        }
+
+        #selectable {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #selectable li {
+            margin: 3px;
+            padding: 0.2em;
+            font-size: 1.2em;
+        }
+    </style>
+    <script type='text/javascript'>
+        hljs.initHighlightingOnLoad();
+        $(document).ready(function () {
+            $('pre code').each(function (i, e) { hljs.highlightBlock(e) });
+        });
+        $(function () {
+            $(".step").hide();
+            $(function () {
+                $("#selectable").selectable({
+                    stop: function () {
+                        $(".ui-selected", this).each(function () {
+                            var index = $("#selectable li").index(this);
+                            $(".step").hide("Slide");
+                            $("#step" + index).show("Slide")
+                        });
+                    }
+                }).children().first().addClass('ui-selected');
+                $("#step0").show()
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <h1>Bouncing Ball</h1>
+    <table>
+        <tr>
+            <td>
+                <ol id="selectable">
+                    <li class="ui-widget-content">00</li>
+                    <li class="ui-widget-content">01</li>
+                    <li class="ui-widget-content">02</li>
+                    <li class="ui-widget-content">03</li>
+                    <li class="ui-widget-content">04</li>
+                    <li class="ui-widget-content">05</li>
+                    <li class="ui-widget-content">06</li>
+                    <li class="ui-widget-content">07</li>
+                    <li class="ui-widget-content">08</li>
+                    <li class="ui-widget-content">09</li>
+                    <li class="ui-widget-content">10</li>
+                    <li class="ui-widget-content">11</li>
+                    <li class="ui-widget-content">12</li>
+                    <li class="ui-widget-content">13</li>
+                    <li class="ui-widget-content">14</li>
+                    <li class="ui-widget-content">15</li>
+                    <li class="ui-widget-content">16</li>
+                    <li class="ui-widget-content">17</li>
+                    <li class="ui-widget-content">18</li>
+                    <li class="ui-widget-content">19</li>
+                    <li class="ui-widget-content">20</li>
+                </ol>
+            </td>
+            <td>&nbsp;</td>
+            <td>
+                <!-- -- --  Step 00  -- -- -->
+                <div id="step0" class="step">
+                    <h2>Step 00</h2>
+                    <p>This is a minimal game - it's just a black screen. The code first defines a blank class called
+                        MyGame. It
+                        then creates an object of this class and executes it. </p>
+                    <pre><code>
+import cdkk
+
+class MyGame(cdkk.PyGameApp):
+    pass
+
+MyGame().execute()
+                </code></pre>
+                </div>
+
+                <!-- -- --  Step 01  -- -- -->
+                <div id="step1" class="step">
+                    <h2>Step 01</h2>
+                    <p>Add the app_config dictionary and pass it to the MyGame constructor to configure the screen size,
+                        background
+                        colour and title. </p>
+                    <p>
+                        The available configuration options are: caption, width, height, full_screen, background_fill,
+                        frame_rate,
+                        slow_update_time, scroll_time, key_repeat_time, auto_start, image_path </p>
+                    <pre><code>
+import cdkk 
+
+class MyGame(cdkk.PyGameApp): 
+    pass 
+
+app_config = { 
+    "width": 1200, "height": 920, 
+    "background_fill": "burlywood", 
+    "caption": "Bouncing Ball" 
+} 
+
+MyGame(app_config).execute() 
+                    </code></pre>
+                    <h3>Try</h3>
+                    <ul>
+                        <li>Change the window size to fill your screen.</li>
+                        <li>Change the background colours. For a full list, see the <a
+                                href="https://www.webucator.com/blog/2015/03/python-color-constants-module/"
+                                target="_blank">Python
+                                Color Constants</a></li>
+                    </ul>
+                </div>
+
+                <!-- -- --  Step 02  -- -- -->
+                <div id="step2" class="step">
+                    <h2>Step 02</h2>
+                    <p>The class Manager_Ball will manage all of the sprites on screen. For now, it creates a single
+                        sprite,
+                        loads an
+                        image and positions it. The add() method makes the sprite visible.
+
+                    </p>
+                    <p>
+                        The MyGame class has an initialisation method that creates the Manager_Ball sprite manager.
+                    </p>
+                    <pre><code>
+import cdkk
+
+class Manager_Ball(cdkk.SpriteManager):
+    def __init__(self):
+        super().__init__("Ball Manager")
+        self.ball = cdkk.Sprite()
+        self.ball.load_image_from_file("ball_red.png")
+        self.ball.rect.topleft = (100, 50)
+        self.add(self.ball)
+
+class MyGame(cdkk.PyGameApp):
+    def init(self):
+        super().init()
+        self._ball_mgr = Manager_Ball()
+        self.add_sprite_mgr(self._ball_mgr)
+
+app_config = {
+    "width": 1200, "height": 920,
+    "background_fill": "burlywood",
+    "caption": "Bouncing Ball",
+    "image_path": "BouncingBall\\Images\\"
+}
+
+MyGame(app_config).execute()            
+                    </code></pre>
+                    <h3>Try</h3>
+                    <ul>
+                        <li>Load a different colour ball or a different image.</li>
+                        <li>Put the image in a different place.</li>
+                        <li>Does it matter if you change the name of the “Ball Manager”? </li>
+                    </ul>
+                </div>
+
+                <!-- -- --  Step 03  -- -- -->
+                <div id="step3" class="step">
+                    <h2>Step 03</h2>
+                    <p>This code does exactly the same as the previous code, except that the code for the ball sprite
+                        has been moved into its own class. The extra comments are just to make the code easier to read.
+                    </p>
+                    <pre><code>
+import cdkk
+
+# --------------------------------------------------
+
+
+class Sprite_Ball(cdkk.Sprite):
+    def __init__(self, filename):
+        super().__init__()
+        self.load_image_from_file(filename)
+        self.rect.topleft = (100, 10)
+
+# --------------------------------------------------
+
+
+class Manager_Ball(cdkk.SpriteManager):
+    def __init__(self):
+        super().__init__("Ball Manager")
+        self.ball = Sprite_Ball("ball_red.png")
+        self.add(self.ball)
+
+# --------------------------------------------------
+
+
+class MyGame(cdkk.PyGameApp):
+    def init(self):
+        super().init()
+        self._ball_mgr = Manager_Ball()
+        self.add_sprite_mgr(self._ball_mgr)
+
+
+app_config = {
+    "width": 1200, "height": 920,
+    "background_fill": "burlywood",
+    "caption": "Bouncing Ball",
+    "image_path": "BouncingBall\\Images\\"
+}
+
+MyGame(app_config).execute()
+                    </code></pre>
+                    <h3>Try</h3>
+                    <ul>
+                        <li>The filename is passed to the Sprite_Ball constructor as a parameter. Pass the position of
+                            the ball as a parameter as well.</li>
+                        <li>Add a second ball that has a different colour and a different position, using the same
+                            Sprite_Ball class.</li>
+                    </ul>
+                </div>
+
+                <!-- -- --  Step 04  -- -- -->
+                <div id="step4" class="step">
+                    <h2>Step 04</h2>
+                    <p>The MyGame class now includes a keyboard map that converts keystrokes to event actions e.g. the
+                        down arrow is mapped to the action "MoveDown". The Manager_Ball class deals with this action.
+                        Based on the action, it decides what to do with the sprites. In response to the "MoveDown"
+                        action, it tells the Ball sprite to move down.</p>
+                    <p>The Sprite_Ball has a new method that changes its Y value, moving it down the screen.</p>
+                    <pre><code>
+import cdkk
+import pygame
+
+# --------------------------------------------------
+
+
+class Sprite_Ball(cdkk.Sprite):
+    def __init__(self, filename):
+        super().__init__()
+        self.load_image_from_file(filename)
+        self.rect.topleft = (100, 10)
+
+    def move_down(self):
+        self.rect.move_physics(0, 10)
+
+# --------------------------------------------------
+
+
+class Manager_Ball(cdkk.SpriteManager):
+    def __init__(self):
+        super().__init__("Ball Manager")
+        self.ball = Sprite_Ball("ball_red.png")
+        self.add(self.ball)
+
+    def event(self, e):
+        dealt_with = super().event(e)
+        if not dealt_with and e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "MoveDown":
+                self.ball.move_down()
+                dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class MyGame(cdkk.PyGameApp):
+    def init(self):
+        super().init()
+        self._ball_mgr = Manager_Ball()
+        self.add_sprite_mgr(self._ball_mgr)
+
+        key_map = {
+            pygame.K_q: "Quit",
+            pygame.K_DOWN: "MoveDown"
+        }
+        self.event_mgr.event_map(key_event_map=key_map)
+
+
+app_config = {
+    "width": 1200, "height": 920,
+    "background_fill": "burlywood",
+    "caption": "Bouncing Ball",
+    "image_path": "BouncingBall\\Images\\"
+}
+
+MyGame(app_config).execute()
+                    </code></pre>
+                    <h3>Try</h3>
+                    <ul>
+                        <li>Use a different key to move the ball.</li>
+                        <li>Change the amount by which the ball moves.</li>
+                        <li>Add a key that moves the ball up, left and right.</li>
+                    </ul>
+                </div>
+
+                <!-- -- --  Step 05  -- -- -->
+                <div id="step5" class="step">
+                    <h2>Step 05</h2>
+                    <p>The Sprite_Ball class is now initialised with a velocity. The new update() method is called every
+                        game loop. It calculates the new positon of the sprite based on its velocity.
+                    </p>
+                    <pre><code>
+import cdkk
+import pygame
+
+# --------------------------------------------------
+
+
+class Sprite_Ball(cdkk.Sprite):
+    def __init__(self, filename):
+        super().__init__()
+        self.load_image_from_file(filename)
+        self.rect.topleft = (100, 10)
+        self.rect.set_velocity(3, 2)
+        self.rect.go()
+
+    def update(self):
+        super().update()
+        self.rect.move_physics()
+
+    def move_down(self):
+        self.rect.move_physics(0, 10)
+
+# --------------------------------------------------
+
+
+class Manager_Ball(cdkk.SpriteManager):
+    def __init__(self):
+        super().__init__("Ball Manager")
+        self.ball = Sprite_Ball("ball_red.png")
+        self.add(self.ball)
+
+    def event(self, e):
+        dealt_with = super().event(e)
+        if not dealt_with and e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "MoveDown":
+                self.ball.move_down()
+                dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class MyGame(cdkk.PyGameApp):
+    def init(self):
+        super().init()
+        self._ball_mgr = Manager_Ball()
+        self.add_sprite_mgr(self._ball_mgr)
+
+        key_map = {
+            pygame.K_q: "Quit",
+            pygame.K_DOWN: "MoveDown"
+        }
+        self.event_mgr.event_map(key_event_map=key_map)
+
+
+app_config = {
+    "width": 1200, "height": 920,
+    "background_fill": "burlywood",
+    "caption": "Bouncing Ball",
+    "image_path": "BouncingBall\\Images\\"
+}
+
+MyGame(app_config).execute()
+                    </code></pre>
+                </div>
+
+                <!-- -- --  Step 06  -- -- -->
+                <div id="step6" class="step">
+                    <h2>Step 06</h2>
+                    <p>The app_config dictionary now prevents the game from automatically starting.</p>
+                    <p> The Manager_Ball class has a new key map to start the game. The action "StartGame" is one of the
+                        predined actions. Others include "Quit", "GameOver" and "UpdateScore".</p>
+                    <p>The Sprite_Ball class only executes go() when the game starts.</p>
+                    <pre><code>
+import cdkk
+import pygame
+
+# --------------------------------------------------
+
+
+class Sprite_Ball(cdkk.Sprite):
+    def __init__(self, filename):
+        super().__init__()
+        self.load_image_from_file(filename)
+        self.rect.topleft = (100, 10)
+        self.rect.set_speed_angle(4, 45)
+
+    def update(self):
+        super().update()
+        self.rect.move_physics()
+
+    def start_game(self):
+        super().start_game()
+        self.rect.go()
+
+    def move_down(self):
+        self.rect.move_physics(0, 10)
+
+# --------------------------------------------------
+
+
+class Manager_Ball(cdkk.SpriteManager):
+    def __init__(self):
+        super().__init__("Ball Manager")
+        self.ball = Sprite_Ball("ball_red.png")
+        self.add(self.ball)
+
+    def event(self, e):
+        dealt_with = super().event(e)
+        if not dealt_with and e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "MoveDown":
+                self.ball.move_down()
+                dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class MyGame(cdkk.PyGameApp):
+    def init(self):
+        super().init()
+        self._ball_mgr = Manager_Ball()
+        self.add_sprite_mgr(self._ball_mgr)
+
+        key_map = {
+            pygame.K_q: "Quit",
+            pygame.K_s: "StartGame",
+            pygame.K_DOWN: "MoveDown"
+        }
+        self.event_mgr.event_map(key_event_map=key_map)
+
+
+app_config = {
+    "width": 1200, "height": 920,
+    "background_fill": "burlywood",
+    "caption": "Bouncing Ball",
+    "image_path": "BouncingBall\\Images\\",
+    "auto_start": False
+}
+
+MyGame(app_config).execute()
+                    </code></pre>
+                </div>
+
+                <!-- -- --  Step 07  -- -- -->
+                <div id="step7" class="step">
+                    <h2>Step 07</h2>
+                    <p>The Sprite_Ball class contains an array of 7 files names - one for every snooker ball. The
+                        __init__() method takes the ball value and it maps this to the filename. Also the balls X
+                        position is chosen randomly.</p>
+                    <pre><code>
+import cdkk
+import pygame
+import random
+
+# --------------------------------------------------
+
+
+class Sprite_Ball(cdkk.Sprite):
+    files = ["ball_red.png", "ball_yellow.png", "ball_green.png", "ball_brown.png",
+                "ball_blue.png", "ball_pink.png", "ball_black.png"]
+
+    def __init__(self, value):
+        super().__init__()
+        self.load_image_from_file(self.files[value-1])
+        self.rect.left = random.randint(50, 500)
+        self.rect.top = 10
+        self.rect.set_speed_angle(4, 45)
+
+    def update(self):
+        super().update()
+        self.rect.move_physics()
+
+    def start_game(self):
+        super().start_game()
+        self.rect.go()
+
+    def move_down(self):
+        self.rect.move_physics(0, 10)
+
+# --------------------------------------------------
+
+
+class Manager_Ball(cdkk.SpriteManager):
+    def __init__(self):
+        super().__init__("Ball Manager")
+        self.ball = Sprite_Ball(1)
+        self.add(self.ball)
+
+    def event(self, e):
+        dealt_with = super().event(e)
+        if not dealt_with and e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "MoveDown":
+                self.ball.move_down()
+                dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class MyGame(cdkk.PyGameApp):
+    def init(self):
+        super().init()
+        self._ball_mgr = Manager_Ball()
+        self.add_sprite_mgr(self._ball_mgr)
+
+        key_map = {
+            pygame.K_q: "Quit",
+            pygame.K_s: "StartGame",
+            pygame.K_DOWN: "MoveDown"
+        }
+        self.event_mgr.event_map(key_event_map=key_map)
+
+
+app_config = {
+    "width": 1200, "height": 920,
+    "background_fill": "burlywood",
+    "caption": "Bouncing Ball",
+    "image_path": "BouncingBall\\Images\\",
+    "auto_start": False
+}
+
+MyGame(app_config).execute()
+                    </code></pre>
+                </div>
+
+                <!-- -- --  Step 08  -- -- -->
+                <div id="step8" class="step">
+                    <h2>Step 08</h2>
+                    <p>The key "b" is mapped to a new action called "CreateBall".</p>
+                    <p>The Manager_Ball deals with CreateBall by creating a new ball each time the event action is
+                        received. The colour of the ball is now random.</p>
+                    <p>The __init__() method in Sprite_Ball now calls go() so that the ball starts moving as soon as it
+                        is created.</p>
+                    <p>The start_game() and move_down() methods in Sprite_Ball are not needed any more and are deleted.
+                    </p>
+                    <pre><code>
+import cdkk
+import pygame
+import random
+
+# --------------------------------------------------
+
+
+class Sprite_Ball(cdkk.Sprite):
+    files = ["ball_red.png", "ball_yellow.png", "ball_green.png", "ball_brown.png",
+                "ball_blue.png", "ball_pink.png", "ball_black.png"]
+
+    def __init__(self, value):
+        super().__init__()
+        self.load_image_from_file(self.files[value-1])
+        self.rect.left = random.randint(50, 500)
+        self.rect.top = 10
+        self.rect.set_speed_angle(4, 45)
+        self.rect.go()
+
+    def update(self):
+        super().update()
+        self.rect.move_physics()
+
+# --------------------------------------------------
+
+
+class Manager_Ball(cdkk.SpriteManager):
+    def __init__(self):
+        super().__init__("Ball Manager")
+
+    def event(self, e):
+        dealt_with = super().event(e)
+        if not dealt_with and e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "CreateBall":
+                ball = Sprite_Ball(random.randint(1, len(Sprite_Ball.files)))
+                self.add(ball)
+                dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class MyGame(cdkk.PyGameApp):
+    def init(self):
+        super().init()
+        self._ball_mgr = Manager_Ball()
+        self.add_sprite_mgr(self._ball_mgr)
+
+        key_map = {
+            pygame.K_q: "Quit",
+            pygame.K_s: "StartGame",
+            pygame.K_b: "CreateBall"
+        }
+        self.event_mgr.event_map(key_event_map=key_map)
+
+
+app_config = {
+    "width": 1200, "height": 920,
+    "background_fill": "burlywood",
+    "caption": "Bouncing Ball",
+    "image_path": "BouncingBall\\Images\\",
+    "auto_start": False
+}
+
+MyGame(app_config).execute()
+                    </code></pre>
+                </div>
+
+                <!-- -- --  Step 09  -- -- -->
+                <div id="step9" class="step">
+                    <h2>Step 09</h2>
+                    <p>The MyGame class passes the size of the window when creating Manager_Ball, and it passes the size
+                        to Sprite_Ball.</p>
+                    <p>The __init__() method in Sprite_Ball adds a limit to its movement, bouncing off the window
+                        boundary. The ball now moves at a random angle and the X position is spread across the width of
+                        the window. The speed of the ball is now based on its value.</p>
+                    <pre><code>
+import cdkk
+import pygame
+import random
+
+# --------------------------------------------------
+
+
+class Sprite_Ball(cdkk.Sprite):
+    files = ["ball_red.png", "ball_yellow.png", "ball_green.png", "ball_brown.png",
+                "ball_blue.png", "ball_pink.png", "ball_black.png"]
+
+    def __init__(self, value, limits):
+        super().__init__()
+        self.load_image_from_file(self.files[value-1])
+        self.rect.left = random.randint(limits.width * 0.2, limits.width * 0.8)
+        self.rect.top = 10
+        speed = value * 3 + 5
+        angle = random.randint(45, 135)
+        self.rect.set_speed_angle(speed, angle)
+        self.rect.bounce_cor = self.rect.perfect_bounce
+        self.rect.add_limit(cdkk.Physics_Limit(
+            limits, cdkk.LIMIT_KEEP_INSIDE, cdkk.AT_LIMIT_BOUNCE))
+        self.rect.go()
+
+    def update(self):
+        super().update()
+        self.rect.move_physics()
+
+# --------------------------------------------------
+
+
+class Manager_Ball(cdkk.SpriteManager):
+    def __init__(self, limits):
+        super().__init__("Ball Manager")
+        self._limits = limits
+
+    def event(self, e):
+        dealt_with = super().event(e)
+        if not dealt_with and e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "CreateBall":
+                ball = Sprite_Ball(random.randint(
+                    1, len(Sprite_Ball.files)), self._limits)
+                self.add(ball)
+                dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class MyGame(cdkk.PyGameApp):
+    def init(self):
+        super().init()
+        self._ball_mgr = Manager_Ball(self.boundary)
+        self.add_sprite_mgr(self._ball_mgr)
+
+        key_map = {
+            pygame.K_q: "Quit",
+            pygame.K_s: "StartGame",
+            pygame.K_b: "CreateBall"
+        }
+        self.event_mgr.event_map(key_event_map=key_map)
+
+
+app_config = {
+    "width": 1200, "height": 920,
+    "background_fill": "burlywood",
+    "caption": "Bouncing Ball",
+    "image_path": "BouncingBall\\Images\\",
+    "auto_start": False
+}
+
+MyGame(app_config).execute()
+                    </code></pre>
+                </div>
+
+                <!-- -- --  Step 10  -- -- -->
+                <div id="step10" class="step">
+                    <h2>Step 10</h2>
+                    <p>Two new classes have been added: Sprite_Bat is the sprite for the bat and Manager_Bat will manage
+                        this srite. The Manager_Bat moves the sprite in response to the mouse. The Sprite_Bat is limited
+                        to the window.</p>
+                    <p>The MyGame class create the Manager_Bat, which then creates the Sprite_Bat.</p>
+                    <pre><code>
+import cdkk
+import pygame
+import random
+
+# --------------------------------------------------
+
+
+class Sprite_Ball(cdkk.Sprite):
+    files = ["ball_red.png", "ball_yellow.png", "ball_green.png", "ball_brown.png",
+                "ball_blue.png", "ball_pink.png", "ball_black.png"]
+
+    def __init__(self, value, limits):
+        super().__init__()
+        self.load_image_from_file(self.files[value-1])
+        self.rect.left = random.randint(limits.width * 0.2, limits.width * 0.8)
+        self.rect.top = 10
+        speed = value * 3 + 5
+        angle = random.randint(45, 135)
+        self.rect.set_speed_angle(speed, angle)
+        self.rect.bounce_cor = self.rect.perfect_bounce
+        self.rect.add_limit(cdkk.Physics_Limit(
+            limits, cdkk.LIMIT_KEEP_INSIDE, cdkk.AT_LIMIT_BOUNCE))
+        self.rect.go()
+
+    def update(self):
+        super().update()
+        self.rect.move_physics()
+
+# --------------------------------------------------
+
+
+class Manager_Ball(cdkk.SpriteManager):
+    def __init__(self, limits):
+        super().__init__("Ball Manager")
+        self._limits = limits
+
+    def event(self, e):
+        dealt_with = super().event(e)
+        if not dealt_with and e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "CreateBall":
+                ball = Sprite_Ball(random.randint(
+                    1, len(Sprite_Ball.files)), self._limits)
+                self.add(ball)
+                dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class Sprite_Bat (cdkk.Sprite):
+    def __init__(self, limits):
+        super().__init__("Bat")
+        self.load_image_from_file("bat.png")
+        self.rect.centerx = limits.width/2
+        self.rect.top = limits.height * 0.9
+        self.rect.add_limit(cdkk.Physics_Limit(
+            limits, cdkk.LIMIT_KEEP_INSIDE, cdkk.AT_LIMIT_X_HOLD_POS_X))
+
+# --------------------------------------------------
+
+
+class Manager_Bat(cdkk.SpriteManager):
+    def __init__(self, limits, name="Bat Manager"):
+        super().__init__(name)
+        self._bat = Sprite_Bat(limits)
+        self.add(self._bat)
+
+    def event(self, e):
+        dealt_with = False
+        if e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "MouseMotion":
+                x, y = e.info['pos']
+                self._bat.rect.move_to(x, None)
+                dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class MyGame(cdkk.PyGameApp):
+    def init(self):
+        super().init()
+        self._ball_mgr = Manager_Ball(self.boundary)
+        self.add_sprite_mgr(self._ball_mgr)
+        self._bat_mgr = Manager_Bat(self.boundary)
+        self.add_sprite_mgr(self._bat_mgr)
+
+        key_map = {
+            pygame.K_q: "Quit",
+            pygame.K_s: "StartGame",
+            pygame.K_b: "CreateBall"
+        }
+        self.event_mgr.event_map(key_event_map=key_map)
+
+
+app_config = {
+    "width": 1200, "height": 920,
+    "background_fill": "burlywood",
+    "caption": "Bouncing Ball",
+    "image_path": "BouncingBall\\Images\\",
+    "auto_start": False
+}
+
+MyGame(app_config).execute()
+                    </code></pre>
+                </div>
+
+                <!-- -- --  Step 11  -- -- -->
+                <div id="step11" class="step">
+                    <h2>Step 11</h2>
+                    <p>The update() method in the MyGame is called every game loop. It finds the bat sprite and passes
+                        it to the new check_for_hits() method in the Manager_Bat class.</p>
+                    <p>The check_for_hits() method create a "dynamic limit" that causes the ball to bounce off of the
+                        bat.</p>
+                    <pre><code>
+import cdkk
+import pygame
+import random
+
+# --------------------------------------------------
+
+
+class Sprite_Ball(cdkk.Sprite):
+    files = ["ball_red.png", "ball_yellow.png", "ball_green.png", "ball_brown.png",
+                "ball_blue.png", "ball_pink.png", "ball_black.png"]
+
+    def __init__(self, value, limits):
+        super().__init__()
+        self.load_image_from_file(self.files[value-1])
+        self.rect.left = random.randint(limits.width * 0.2, limits.width * 0.8)
+        self.rect.top = 10
+        speed = value * 3 + 5
+        angle = random.randint(45, 135)
+        self.rect.set_speed_angle(speed, angle)
+        self.rect.bounce_cor = self.rect.perfect_bounce
+        self.rect.add_limit(cdkk.Physics_Limit(
+            limits, cdkk.LIMIT_KEEP_INSIDE, cdkk.AT_LIMIT_BOUNCE))
+        self.rect.go()
+
+    def update(self):
+        super().update()
+        self.rect.move_physics()
+
+# --------------------------------------------------
+
+
+class Manager_Ball(cdkk.SpriteManager):
+    def __init__(self, limits):
+        super().__init__("Ball Manager")
+        self._limits = limits
+
+    def event(self, e):
+        dealt_with = super().event(e)
+        if not dealt_with and e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "CreateBall":
+                ball = Sprite_Ball(random.randint(
+                    1, len(Sprite_Ball.files)), self._limits)
+                self.add(ball)
+                dealt_with = True
+        return dealt_with
+
+    def check_bat_hits(self, bat):
+        for ball in self.sprites():
+            ball.rect.dynamic_limit(cdkk.Physics_Limit(
+                bat.rect, cdkk.LIMIT_KEEP_OUTSIDE, cdkk.AT_LIMIT_Y_BOUNCE_Y))
+
+# --------------------------------------------------
+
+
+class Sprite_Bat (cdkk.Sprite):
+    def __init__(self, limits):
+        super().__init__("Bat")
+        self.load_image_from_file("bat.png")
+        self.rect.centerx = limits.width/2
+        self.rect.top = limits.height * 0.9
+        self.rect.add_limit(cdkk.Physics_Limit(
+            limits, cdkk.LIMIT_KEEP_INSIDE, cdkk.AT_LIMIT_X_HOLD_POS_X))
+
+# --------------------------------------------------
+
+
+class Manager_Bat(cdkk.SpriteManager):
+    def __init__(self, limits, name="Bat Manager"):
+        super().__init__(name)
+        self._bat = Sprite_Bat(limits)
+        self.add(self._bat)
+
+    def event(self, e):
+        dealt_with = False
+        if e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "MouseMotion":
+                x, y = e.info['pos']
+                self._bat.rect.move_to(x, None)
+                dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class MyGame(cdkk.PyGameApp):
+    def init(self):
+        super().init()
+        self._ball_mgr = Manager_Ball(self.boundary)
+        self.add_sprite_mgr(self._ball_mgr)
+        self._bat_mgr = Manager_Bat(self.boundary)
+        self.add_sprite_mgr(self._bat_mgr)
+
+        key_map = {
+            pygame.K_q: "Quit",
+            pygame.K_s: "StartGame",
+            pygame.K_b: "CreateBall"
+        }
+        self.event_mgr.event_map(key_event_map=key_map)
+
+    def update(self):
+        super().update()
+        bat = self.sprite("Bat Manager", "Bat")
+        self._ball_mgr.check_bat_hits(bat)
+
+
+app_config = {
+    "width": 1200, "height": 920,
+    "background_fill": "burlywood",
+    "caption": "Bouncing Ball",
+    "image_path": "BouncingBall\\Images\\",
+    "auto_start": False
+}
+
+MyGame(app_config).execute()
+                    </code></pre>
+                </div>
+
+                <!-- -- --  Step 12  -- -- -->
+                <div id="step12" class="step">
+                    <h2>Step 12</h2>
+                    <p>The Sprite_Ball nows posts a new "Boundary" event when it hits the window boundary. The event
+                        includes a unique ID for the ball.</p>
+                    <p>The Manager_Ball class deals with this event by deleting the ball.</p>
+                    <pre><code>
+import cdkk
+import pygame
+import random
+
+# --------------------------------------------------
+
+
+class Sprite_Ball(cdkk.Sprite):
+    files = ["ball_red.png", "ball_yellow.png", "ball_green.png", "ball_brown.png",
+                "ball_blue.png", "ball_pink.png", "ball_black.png"]
+
+    def __init__(self, value, limits):
+        super().__init__()
+        self.load_image_from_file(self.files[value-1])
+        self.rect.left = random.randint(limits.width * 0.2, limits.width * 0.8)
+        self.rect.top = 10
+        speed = value * 3 + 5
+        angle = random.randint(45, 135)
+        self.rect.set_speed_angle(speed, angle)
+        self.rect.bounce_cor = self.rect.perfect_bounce
+        bounce_event = cdkk.EventManager.gc_event(
+            "Boundary", ball_id=self.uuid)
+        self.rect.add_limit(cdkk.Physics_Limit(
+            limits, cdkk.LIMIT_KEEP_INSIDE, cdkk.AT_LIMIT_BOUNCE, bounce_event))
+        self.rect.go()
+
+    def update(self):
+        super().update()
+        self.rect.move_physics()
+
+# --------------------------------------------------
+
+
+class Manager_Ball(cdkk.SpriteManager):
+    def __init__(self, limits):
+        super().__init__("Ball Manager")
+        self._limits = limits
+
+    def event(self, e):
+        dealt_with = super().event(e)
+        if not dealt_with and e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "Boundary":
+                if e.at_limit_y & cdkk.AT_LIMIT_BOTTOM:
+                    self.kill_uuid(e.info["ball_id"])
+            if e.action == "CreateBall":
+                ball = Sprite_Ball(random.randint(
+                    1, len(Sprite_Ball.files)), self._limits)
+                self.add(ball)
+                dealt_with = True
+        return dealt_with
+
+    def check_bat_hits(self, bat):
+        for ball in self.sprites():
+            ball.rect.dynamic_limit(cdkk.Physics_Limit(
+                bat.rect, cdkk.LIMIT_KEEP_OUTSIDE, cdkk.AT_LIMIT_Y_BOUNCE_Y))
+
+# --------------------------------------------------
+
+
+class Sprite_Bat (cdkk.Sprite):
+    def __init__(self, limits):
+        super().__init__("Bat")
+        self.load_image_from_file("bat.png")
+        self.rect.centerx = limits.width/2
+        self.rect.top = limits.height * 0.9
+        self.rect.add_limit(cdkk.Physics_Limit(
+            limits, cdkk.LIMIT_KEEP_INSIDE, cdkk.AT_LIMIT_X_HOLD_POS_X))
+
+# --------------------------------------------------
+
+
+class Manager_Bat(cdkk.SpriteManager):
+    def __init__(self, limits, name="Bat Manager"):
+        super().__init__(name)
+        self._bat = Sprite_Bat(limits)
+        self.add(self._bat)
+
+    def event(self, e):
+        dealt_with = False
+        if e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "MouseMotion":
+                x, y = e.info['pos']
+                self._bat.rect.move_to(x, None)
+                dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class MyGame(cdkk.PyGameApp):
+    def init(self):
+        super().init()
+        self._ball_mgr = Manager_Ball(self.boundary)
+        self.add_sprite_mgr(self._ball_mgr)
+        self._bat_mgr = Manager_Bat(self.boundary)
+        self.add_sprite_mgr(self._bat_mgr)
+
+        key_map = {
+            pygame.K_q: "Quit",
+            pygame.K_s: "StartGame",
+            pygame.K_b: "CreateBall"
+        }
+        self.event_mgr.event_map(key_event_map=key_map)
+
+    def update(self):
+        super().update()
+        bat = self.sprite("Bat Manager", "Bat")
+        self._ball_mgr.check_bat_hits(bat)
+
+
+app_config = {
+    "width": 1200, "height": 920,
+    "background_fill": "burlywood",
+    "caption": "Bouncing Ball",
+    "image_path": "BouncingBall\\Images\\",
+    "auto_start": False
+}
+
+MyGame(app_config).execute()
+                    </code></pre>
+                </div>
+
+                <!-- -- --  Step 13  -- -- -->
+                <div id="step13" class="step">
+                    <h2>Step 13</h2>
+                    <p>The game is changed so that there are 3 balls at a time and a total of 10 balls. The Manager_Ball
+                        class has a mew add_balls() method that creates Sprite_Ball objects. It is called when
+                        Manager_Ball is created and each time a ball hits the bottom boundary.</p>
+                    <pre><code>
+import cdkk
+import pygame
+import random
+
+# --------------------------------------------------
+
+
+class Sprite_Ball(cdkk.Sprite):
+    files = ["ball_red.png", "ball_yellow.png", "ball_green.png", "ball_brown.png",
+                "ball_blue.png", "ball_pink.png", "ball_black.png"]
+
+    def __init__(self, value, limits):
+        super().__init__()
+        self.load_image_from_file(self.files[value - 1])
+        self.rect.left = random.randint(limits.width * 0.2, limits.width * 0.8)
+        self.rect.top = 10
+        speed = value * 3 + 5
+        angle = random.randint(45, 135)
+        self.rect.set_speed_angle(speed, angle)
+        self.rect.bounce_cor = self.rect.perfect_bounce
+        bounce_event = cdkk.EventManager.gc_event(
+            "Boundary", ball_id=self.uuid)
+        self.rect.add_limit(cdkk.Physics_Limit(
+            limits, cdkk.LIMIT_KEEP_INSIDE, cdkk.AT_LIMIT_BOUNCE, bounce_event))
+        self.rect.go()
+
+    def update(self):
+        super().update()
+        self.rect.move_physics()
+
+# --------------------------------------------------
+
+
+class Manager_Ball(cdkk.SpriteManager):
+    def __init__(self, limits, total, at_a_time):
+        super().__init__("Ball Manager")
+        self._limits = limits
+        self._at_a_time = at_a_time
+        self._total = total
+        self.balls_left = total
+        self.add_balls()
+
+    def add_balls(self):
+        current_balls = len(self.sprites())
+        new_balls = self._at_a_time - current_balls
+        if new_balls > self.balls_left:
+            new_balls = self.balls_left
+
+        for i in range(new_balls):
+            value = random.randint(1, len(Sprite_Ball.files))
+            ball = Sprite_Ball(value, self._limits)
+            self.add(ball)
+            self.balls_left -= 1
+
+    def event(self, e):
+        dealt_with = super().event(e)
+        if not dealt_with and e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "Boundary":
+                if e.at_limit_y & cdkk.AT_LIMIT_BOTTOM:
+                    self.kill_uuid(e.info["ball_id"])
+                    self.add_balls()
+        return dealt_with
+
+    def check_bat_hits(self, bat):
+        for ball in self.sprites():
+            ball.rect.dynamic_limit(cdkk.Physics_Limit(
+                bat.rect, cdkk.LIMIT_KEEP_OUTSIDE, cdkk.AT_LIMIT_Y_BOUNCE_Y))
+
+# --------------------------------------------------
+
+
+class Sprite_Bat(cdkk.Sprite):
+    def __init__(self, limits):
+        super().__init__("Bat")
+        self.load_image_from_file("bat.png")
+        self.rect.centerx = limits.width / 2
+        self.rect.top = limits.height * 0.9
+        self.rect.add_limit(cdkk.Physics_Limit(
+            limits, cdkk.LIMIT_KEEP_INSIDE, cdkk.AT_LIMIT_X_HOLD_POS_X))
+
+# --------------------------------------------------
+
+
+class Manager_Bat(cdkk.SpriteManager):
+    def __init__(self, limits, name="Bat Manager"):
+        super().__init__(name)
+        self._bat = Sprite_Bat(limits)
+        self.add(self._bat)
+
+    def event(self, e):
+        dealt_with = False
+        if e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "MouseMotion":
+                x, y = e.info["pos"]
+                self._bat.rect.move_to(x, None)
+                dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class MyGame(cdkk.PyGameApp):
+    def init(self):
+        super().init()
+        self._ball_mgr = Manager_Ball(self.boundary, 10, 3)
+        self.add_sprite_mgr(self._ball_mgr)
+        self._bat_mgr = Manager_Bat(self.boundary)
+        self.add_sprite_mgr(self._bat_mgr)
+
+        key_map = {
+            pygame.K_q: "Quit",
+            pygame.K_s: "StartGame"
+        }
+        self.event_mgr.event_map(key_event_map=key_map)
+
+    def update(self):
+        super().update()
+        bat = self.sprite("Bat Manager", "Bat")
+        self._ball_mgr.check_bat_hits(bat)
+
+
+app_config = {
+    "width": 1200,
+    "height": 920,
+    "background_fill": "burlywood",
+    "caption": "Bouncing Ball",
+    "image_path": "BouncingBall\\Images\\",
+    "auto_start": False,
+}
+
+MyGame(app_config).execute()
+                    </code></pre>
+                </div>
+
+                <!-- -- --  Step 14  -- -- -->
+                <div id="step14" class="step">
+                    <h2>Step 14</h2>
+                    <p>A new Manager_Scoreboard calls is added to the score, the time left and the number of balls left.
+                        The class keeps track of the timer and posts the event EVENT_GAME_TIMER_1; this event isn't
+                        dealt with yet. The update() method is called every game loop and it updates the time left.</p>
+                    <p>New code in the update() method in MyGame copies the number of balls left from the Manager_Ball
+                        to the Manager_Scoreboard.</p>
+                    <pre><code>
+import cdkk
+import pygame
+import random
+
+# --------------------------------------------------
+
+
+class Sprite_Ball(cdkk.Sprite):
+    files = ["ball_red.png", "ball_yellow.png", "ball_green.png", "ball_brown.png",
+                "ball_blue.png", "ball_pink.png", "ball_black.png"]
+
+    def __init__(self, value, limits):
+        super().__init__()
+        self.load_image_from_file(self.files[value - 1])
+        self.rect.left = random.randint(limits.width * 0.2, limits.width * 0.8)
+        self.rect.top = 10
+        speed = value * 3 + 5
+        angle = random.randint(45, 135)
+        self.rect.set_speed_angle(speed, angle)
+        self.rect.bounce_cor = self.rect.perfect_bounce
+        bounce_event = cdkk.EventManager.gc_event(
+            "Boundary", ball_id=self.uuid)
+        self.rect.add_limit(cdkk.Physics_Limit(
+            limits, cdkk.LIMIT_KEEP_INSIDE, cdkk.AT_LIMIT_BOUNCE, bounce_event))
+        self.rect.go()
+
+    def update(self):
+        super().update()
+        self.rect.move_physics()
+
+# --------------------------------------------------
+
+
+class Manager_Ball(cdkk.SpriteManager):
+    def __init__(self, limits, total, at_a_time):
+        super().__init__("Ball Manager")
+        self._limits = limits
+        self._at_a_time = at_a_time
+        self._total = total
+        self.balls_left = total
+        self.add_balls()
+
+    def add_balls(self):
+        current_balls = len(self.sprites())
+        new_balls = self._at_a_time - current_balls
+        if new_balls > self.balls_left:
+            new_balls = self.balls_left
+
+        for i in range(new_balls):
+            value = random.randint(1, len(Sprite_Ball.files))
+            ball = Sprite_Ball(value, self._limits)
+            self.add(ball)
+            self.balls_left -= 1
+
+    def event(self, e):
+        dealt_with = super().event(e)
+        if not dealt_with and e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "Boundary":
+                if e.at_limit_y & cdkk.AT_LIMIT_BOTTOM:
+                    self.kill_uuid(e.info["ball_id"])
+                    self.add_balls()
+        return dealt_with
+
+    def check_bat_hits(self, bat):
+        for ball in self.sprites():
+            ball.rect.dynamic_limit(cdkk.Physics_Limit(
+                bat.rect, cdkk.LIMIT_KEEP_OUTSIDE, cdkk.AT_LIMIT_Y_BOUNCE_Y))
+
+# --------------------------------------------------
+
+
+class Sprite_Bat(cdkk.Sprite):
+    def __init__(self, limits):
+        super().__init__("Bat")
+        self.load_image_from_file("bat.png")
+        self.rect.centerx = limits.width / 2
+        self.rect.top = limits.height * 0.9
+        self.rect.add_limit(cdkk.Physics_Limit(
+            limits, cdkk.LIMIT_KEEP_INSIDE, cdkk.AT_LIMIT_X_HOLD_POS_X))
+
+# --------------------------------------------------
+
+
+class Manager_Bat(cdkk.SpriteManager):
+    def __init__(self, limits, name="Bat Manager"):
+        super().__init__(name)
+        self._bat = Sprite_Bat(limits)
+        self.add(self._bat)
+
+    def event(self, e):
+        dealt_with = False
+        if e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "MouseMotion":
+                x, y = e.info["pos"]
+                self._bat.rect.move_to(x, None)
+                dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class Manager_Scoreboard(cdkk.SpriteManager):
+    def __init__(self, limits, game_time):
+        super().__init__("Scoreboard Manager")
+        self._game_time = game_time
+
+        text_style = {"fillcolour": None, "outlinecolour": None,
+                        "align_horiz": "L", "width": 200, "height": 35}
+
+        tb_score = cdkk.Sprite_TextBox("Score", style=text_style)
+        tb_score.set_text_format("Score: {0}", 0)
+        tb_score.rect.midleft = (limits.width * 0.1, limits.height * 0.05)
+        self.add(tb_score)
+        self.score = 0
+
+        self._timer = cdkk.Timer(self._game_time, cdkk.EVENT_GAME_TIMER_1)
+        tb_time_left = cdkk.Sprite_TextBox("Time Left", style=text_style)
+        tb_time_left.set_text_format("Time Left: {0:0.1f}", 0)
+        tb_time_left.rect.center = (limits.width * 0.45, limits.height * 0.05)
+        self.add(tb_time_left)
+
+        tb_balls_left = cdkk.Sprite_TextBox("Balls Left", style=text_style)
+        tb_balls_left.set_text_format("Balls Left: {0}", 0)
+        tb_balls_left.rect.midright = (
+            limits.width * 0.85, limits.height * 0.05)
+        self.add(tb_balls_left)
+        self.balls_left = 0
+
+    @property
+    def score(self):
+        return self._score
+
+    @score.setter
+    def score(self, new_score):
+        self._score = new_score
+        self.sprite("Score").set_text(self.score)
+
+    @property
+    def balls_left(self):
+        return self._balls_left
+
+    @balls_left.setter
+    def balls_left(self, new_balls_left):
+        self._balls_left = new_balls_left
+        self.sprite("Balls Left").set_text(self.balls_left)
+
+    def update(self):
+        super().update()
+        self.sprite("Time Left").set_text(self._timer.time_left)
+
+# --------------------------------------------------
+
+
+class MyGame(cdkk.PyGameApp):
+    def init(self):
+        super().init()
+        self._ball_mgr = Manager_Ball(self.boundary, 10, 3)
+        self.add_sprite_mgr(self._ball_mgr)
+        self._bat_mgr = Manager_Bat(self.boundary)
+        self.add_sprite_mgr(self._bat_mgr)
+        self._scoreboard_mgr = Manager_Scoreboard(self.boundary, 15)
+        self.add_sprite_mgr(self._scoreboard_mgr)
+
+        key_map = {
+            pygame.K_q: "Quit",
+            pygame.K_s: "StartGame"
+        }
+        self.event_mgr.event_map(key_event_map=key_map)
+
+    def update(self):
+        super().update()
+        bat = self.sprite("Bat Manager", "Bat")
+        self._ball_mgr.check_bat_hits(bat)
+        self._scoreboard_mgr.balls_left = self._ball_mgr.balls_left
+
+
+app_config = {
+    "width": 1200,
+    "height": 920,
+    "background_fill": "burlywood",
+    "caption": "Bouncing Ball",
+    "image_path": "BouncingBall\\Images\\",
+    "auto_start": False,
+}
+
+MyGame(app_config).execute()
+                    </code></pre>
+                </div>
+
+                <!-- -- --  Step 15  -- -- -->
+                <div id="step15" class="step">
+                    <h2>Step 15</h2>
+                    <p>The score now works properly. The Sprite_Ball stores its value. The check_bat_hits() method sets
+                        a new event to update te score each time a hit occurs. This event is dealt with by the
+                        Manager_Scoreboard class which updates the score.</p>
+                    <pre><code>
+import cdkk
+import pygame
+import random
+
+# --------------------------------------------------
+
+
+class Sprite_Ball(cdkk.Sprite):
+    files = ["ball_red.png", "ball_yellow.png", "ball_green.png", "ball_brown.png",
+                "ball_blue.png", "ball_pink.png", "ball_black.png"]
+
+    def __init__(self, value, limits):
+        super().__init__()
+        self.value = value
+        self.load_image_from_file(self.files[value - 1])
+        self.rect.left = random.randint(limits.width * 0.2, limits.width * 0.8)
+        self.rect.top = 10
+        speed = value * 3 + 5
+        angle = random.randint(45, 135)
+        self.rect.set_speed_angle(speed, angle)
+        self.rect.bounce_cor = self.rect.perfect_bounce
+        bounce_event = cdkk.EventManager.gc_event(
+            "Boundary", ball_id=self.uuid)
+        self.rect.add_limit(cdkk.Physics_Limit(
+            limits, cdkk.LIMIT_KEEP_INSIDE, cdkk.AT_LIMIT_BOUNCE, bounce_event))
+        self.rect.go()
+
+    def update(self):
+        super().update()
+        self.rect.move_physics()
+
+# --------------------------------------------------
+
+
+class Manager_Ball(cdkk.SpriteManager):
+    def __init__(self, limits, total, at_a_time):
+        super().__init__("Ball Manager")
+        self._limits = limits
+        self._at_a_time = at_a_time
+        self._total = total
+        self.balls_left = total
+        self.add_balls()
+
+    def add_balls(self):
+        current_balls = len(self.sprites())
+        new_balls = self._at_a_time - current_balls
+        if new_balls > self.balls_left:
+            new_balls = self.balls_left
+
+        for i in range(new_balls):
+            value = random.randint(1, len(Sprite_Ball.files))
+            ball = Sprite_Ball(value, self._limits)
+            self.add(ball)
+            self.balls_left -= 1
+
+    def event(self, e):
+        dealt_with = super().event(e)
+        if not dealt_with and e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "Boundary":
+                if e.at_limit_y & cdkk.AT_LIMIT_BOTTOM:
+                    self.kill_uuid(e.info["ball_id"])
+                    self.add_balls()
+        return dealt_with
+
+    def check_bat_hits(self, bat):
+        for ball in self.sprites():
+            score_event = cdkk.EventManager.gc_event(
+                "UpdateScore", score=ball.value)
+            ball.rect.dynamic_limit(cdkk.Physics_Limit(
+                bat.rect, cdkk.LIMIT_KEEP_OUTSIDE, cdkk.AT_LIMIT_Y_BOUNCE_Y, score_event))
+
+# --------------------------------------------------
+
+
+class Sprite_Bat(cdkk.Sprite):
+    def __init__(self, limits):
+        super().__init__("Bat")
+        self.load_image_from_file("bat.png")
+        self.rect.centerx = limits.width / 2
+        self.rect.top = limits.height * 0.9
+        self.rect.add_limit(cdkk.Physics_Limit(
+            limits, cdkk.LIMIT_KEEP_INSIDE, cdkk.AT_LIMIT_X_HOLD_POS_X))
+
+# --------------------------------------------------
+
+
+class Manager_Bat(cdkk.SpriteManager):
+    def __init__(self, limits, name="Bat Manager"):
+        super().__init__(name)
+        self._bat = Sprite_Bat(limits)
+        self.add(self._bat)
+
+    def event(self, e):
+        dealt_with = False
+        if e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "MouseMotion":
+                x, y = e.info["pos"]
+                self._bat.rect.move_to(x, None)
+                dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class Manager_Scoreboard(cdkk.SpriteManager):
+    def __init__(self, limits, game_time):
+        super().__init__("Scoreboard Manager")
+        self._game_time = game_time
+
+        text_style = {"fillcolour": None, "outlinecolour": None,
+                        "align_horiz": "L", "width": 200, "height": 35}
+
+        tb_score = cdkk.Sprite_TextBox("Score", style=text_style)
+        tb_score.set_text_format("Score: {0}", 0)
+        tb_score.rect.midleft = (limits.width * 0.1, limits.height * 0.05)
+        self.add(tb_score)
+        self.score = 0
+
+        self._timer = cdkk.Timer(self._game_time, cdkk.EVENT_GAME_TIMER_1)
+        tb_time_left = cdkk.Sprite_TextBox("Time Left", style=text_style)
+        tb_time_left.set_text_format("Time Left: {0:0.1f}", 0)
+        tb_time_left.rect.center = (limits.width * 0.45, limits.height * 0.05)
+        self.add(tb_time_left)
+
+        tb_balls_left = cdkk.Sprite_TextBox("Balls Left", style=text_style)
+        tb_balls_left.set_text_format("Balls Left: {0}", 0)
+        tb_balls_left.rect.midright = (
+            limits.width * 0.85, limits.height * 0.05)
+        self.add(tb_balls_left)
+        self.balls_left = 0
+
+    @property
+    def score(self):
+        return self._score
+
+    @score.setter
+    def score(self, new_score):
+        self._score = new_score
+        self.sprite("Score").set_text(self.score)
+
+    @property
+    def balls_left(self):
+        return self._balls_left
+
+    @balls_left.setter
+    def balls_left(self, new_balls_left):
+        self._balls_left = new_balls_left
+        self.sprite("Balls Left").set_text(self.balls_left)
+
+    def update(self):
+        super().update()
+        self.sprite("Time Left").set_text(self._timer.time_left)
+
+    def event(self, e):
+        dealt_with = False
+        if e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "UpdateScore":
+                self.score += e.info["score"]
+                dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class MyGame(cdkk.PyGameApp):
+    def init(self):
+        super().init()
+        self._ball_mgr = Manager_Ball(self.boundary, 10, 3)
+        self.add_sprite_mgr(self._ball_mgr)
+        self._bat_mgr = Manager_Bat(self.boundary)
+        self.add_sprite_mgr(self._bat_mgr)
+        self._scoreboard_mgr = Manager_Scoreboard(self.boundary, 15)
+        self.add_sprite_mgr(self._scoreboard_mgr)
+
+        key_map = {
+            pygame.K_q: "Quit",
+            pygame.K_s: "StartGame"
+        }
+        self.event_mgr.event_map(key_event_map=key_map)
+
+    def update(self):
+        super().update()
+        bat = self.sprite("Bat Manager", "Bat")
+        self._ball_mgr.check_bat_hits(bat)
+        self._scoreboard_mgr.balls_left = self._ball_mgr.balls_left
+
+
+app_config = {
+    "width": 1200,
+    "height": 920,
+    "background_fill": "burlywood",
+    "caption": "Bouncing Ball",
+    "image_path": "BouncingBall\\Images\\",
+    "auto_start": False,
+}
+
+MyGame(app_config).execute()
+                    </code></pre>
+                </div>
+
+                <!-- -- --  Step 16  -- -- -->
+                <div id="step16" class="step">
+                    <h2>Step 16</h2>
+                    <p>Display Game Over text.</p>
+                    <p>Convert balls_left to a property.</p>
+                    <pre><code>
+import cdkk
+import pygame
+import random
+
+# --------------------------------------------------
+
+
+class Sprite_Ball(cdkk.Sprite):
+    files = ["ball_red.png", "ball_yellow.png", "ball_green.png", "ball_brown.png",
+                "ball_blue.png", "ball_pink.png", "ball_black.png"]
+
+    def __init__(self, value, limits):
+        super().__init__()
+        self.value = value
+        self.load_image_from_file(self.files[value - 1])
+        self.rect.left = random.randint(limits.width * 0.2, limits.width * 0.8)
+        self.rect.top = 10
+        speed = value * 3 + 5
+        angle = random.randint(45, 135)
+        self.rect.set_speed_angle(speed, angle)
+        self.rect.bounce_cor = self.rect.perfect_bounce
+        bounce_event = cdkk.EventManager.gc_event(
+            "Boundary", ball_id=self.uuid)
+        self.rect.add_limit(cdkk.Physics_Limit(
+            limits, cdkk.LIMIT_KEEP_INSIDE, cdkk.AT_LIMIT_BOUNCE, bounce_event))
+        self.rect.go()
+
+    def update(self):
+        super().update()
+        self.rect.move_physics()
+
+# --------------------------------------------------
+
+
+class Manager_Ball(cdkk.SpriteManager):
+    def __init__(self, limits, total, at_a_time):
+        super().__init__("Ball Manager")
+        self._limits = limits
+        self._at_a_time = at_a_time
+        self._total = total
+        self.balls_left = total
+        self.add_balls()
+
+    def add_balls(self):
+        current_balls = len(self.sprites())
+        new_balls = self._at_a_time - current_balls
+        if new_balls > self.balls_left:
+            new_balls = self.balls_left
+
+        for i in range(new_balls):
+            value = random.randint(1, len(Sprite_Ball.files))
+            ball = Sprite_Ball(value, self._limits)
+            self.add(ball)
+            self.balls_left -= 1
+
+    def start_game(self):
+        super().start_game()
+        self.balls_left = self._total
+        self.add_balls()
+
+    def end_game(self):
+        self.balls_left = 0
+        self.empty()
+        super().end_game()
+
+    def event(self, e):
+        dealt_with = super().event(e)
+        if not dealt_with and e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "Boundary":
+                if e.at_limit_y & cdkk.AT_LIMIT_BOTTOM:
+                    self.kill_uuid(e.info["ball_id"])
+                    self.add_balls()
+        return dealt_with
+
+    def check_bat_hits(self, bat):
+        for ball in self.sprites():
+            score_event = cdkk.EventManager.gc_event(
+                "UpdateScore", score=ball.value)
+            ball.rect.dynamic_limit(cdkk.Physics_Limit(
+                bat.rect, cdkk.LIMIT_KEEP_OUTSIDE, cdkk.AT_LIMIT_Y_BOUNCE_Y, score_event))
+
+# --------------------------------------------------
+
+
+class Sprite_Bat(cdkk.Sprite):
+    def __init__(self, limits):
+        super().__init__("Bat")
+        self.load_image_from_file("bat.png")
+        self.rect.centerx = limits.width / 2
+        self.rect.top = limits.height * 0.9
+        self.rect.add_limit(cdkk.Physics_Limit(
+            limits, cdkk.LIMIT_KEEP_INSIDE, cdkk.AT_LIMIT_X_HOLD_POS_X))
+
+# --------------------------------------------------
+
+
+class Manager_Bat(cdkk.SpriteManager):
+    def __init__(self, limits, name="Bat Manager"):
+        super().__init__(name)
+        self._bat = Sprite_Bat(limits)
+        self.add(self._bat)
+
+    def event(self, e):
+        dealt_with = False
+        if e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "MouseMotion":
+                x, y = e.info["pos"]
+                self._bat.rect.move_to(x, None)
+                dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class Manager_Scoreboard(cdkk.SpriteManager):
+    def __init__(self, limits, game_time):
+        super().__init__("Scoreboard Manager")
+        self._game_time = game_time
+
+        text_style = {"fillcolour": None, "outlinecolour": None,
+                        "align_horiz": "L", "width": 200, "height": 35}
+
+        tb_score = cdkk.Sprite_TextBox("Score", style=text_style)
+        tb_score.set_text_format("Score: {0}", 0)
+        tb_score.rect.midleft = (limits.width * 0.1, limits.height * 0.05)
+        self.add(tb_score)
+        self.score = 0
+
+        self._timer = cdkk.Timer(self._game_time, cdkk.EVENT_GAME_TIMER_1)
+        tb_time_left = cdkk.Sprite_TextBox("Time Left", style=text_style)
+        tb_time_left.set_text_format("Time Left: {0:0.1f}", 0)
+        tb_time_left.rect.center = (limits.width * 0.45, limits.height * 0.05)
+        self.add(tb_time_left)
+
+        tb_balls_left = cdkk.Sprite_TextBox("Balls Left", style=text_style)
+        tb_balls_left.set_text_format("Balls Left: {0}", 0)
+        tb_balls_left.rect.midright = (
+            limits.width * 0.85, limits.height * 0.05)
+        self.add(tb_balls_left)
+        self.balls_left = 0
+
+        self._game_over = cdkk.Sprite_GameOver(limits)
+        self._game_over.rect.center = (limits.width * 0.5, limits.height * 0.5)
+
+    @property
+    def score(self):
+        return self._score
+
+    @score.setter
+    def score(self, new_score):
+        self._score = new_score
+        self.sprite("Score").set_text(self.score)
+
+    @property
+    def balls_left(self):
+        return self._balls_left
+
+    @balls_left.setter
+    def balls_left(self, new_balls_left):
+        self._balls_left = new_balls_left
+        self.sprite("Balls Left").set_text(self.balls_left)
+
+    def update(self):
+        super().update()
+        self.sprite("Time Left").set_text(self._timer.time_left)
+
+    def start_game(self):
+        super().start_game()
+        self.score = 0
+        self._timer.start()
+        self.remove(self._game_over)  # Hide Game Over
+
+    def end_game(self):
+        self.add(self._game_over)  # Display Game Over
+        super().end_game()
+
+    def event(self, e):
+        dealt_with = False
+        if e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "UpdateScore":
+                self.score += e.info["score"]
+                dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class MyGame(cdkk.PyGameApp):
+    def init(self):
+        super().init()
+        self._ball_mgr = Manager_Ball(self.boundary, 10, 3)
+        self.add_sprite_mgr(self._ball_mgr)
+        self._bat_mgr = Manager_Bat(self.boundary)
+        self.add_sprite_mgr(self._bat_mgr)
+        self._scoreboard_mgr = Manager_Scoreboard(self.boundary, 15)
+        self.add_sprite_mgr(self._scoreboard_mgr)
+
+        key_map = {
+            pygame.K_q: "Quit",
+            pygame.K_s: "StartGame"
+        }
+        self.event_mgr.event_map(key_event_map=key_map)
+        self.event_mgr.user_event(cdkk.EVENT_GAME_TIMER_1, "GameOver")
+
+    def update(self):
+        super().update()
+        bat = self.sprite("Bat Manager", "Bat")
+        self._ball_mgr.check_bat_hits(bat)
+        self._scoreboard_mgr.balls_left = self._ball_mgr.balls_left
+
+
+app_config = {
+    "width": 1200,
+    "height": 920,
+    "background_fill": "burlywood",
+    "caption": "Bouncing Ball",
+    "image_path": "BouncingBall\\Images\\",
+    "auto_start": False,
+}
+
+MyGame(app_config).execute()
+                    </code></pre>
+                </div>
+
+                <!-- -- --  Step 17  -- -- -->
+                <div id="step17" class="step">
+                    <h2>Step 17</h2>
+                    <p>A new update() method in Manager_Ball checks for collisions between the balls and causes them to
+                        bounce off each other. A new Manager_Court is added to draw a boundary around the game, instead
+                        of using the window. Adjust the scoreboard items positions.</p>
+                    <pre><code>
+import cdkk
+import pygame
+import random
+
+# --------------------------------------------------
+
+
+class Sprite_Ball(cdkk.Sprite):
+    files = ["ball_red.png", "ball_yellow.png", "ball_green.png", "ball_brown.png",
+                "ball_blue.png", "ball_pink.png", "ball_black.png"]
+
+    def __init__(self, value, limits):
+        super().__init__()
+        self.value = value
+        self.load_image_from_file(self.files[value - 1])
+        self.rect.left = random.randint(limits.width * 0.2, limits.width * 0.8)
+        self.rect.top = 10
+        speed = value * 3 + 5
+        angle = random.randint(45, 135)
+        self.rect.set_speed_angle(speed, angle)
+        self.rect.bounce_cor = self.rect.perfect_bounce
+        bounce_event = cdkk.EventManager.gc_event(
+            "Boundary", ball_id=self.uuid)
+        self.rect.add_limit(cdkk.Physics_Limit(
+            limits, cdkk.LIMIT_KEEP_INSIDE, cdkk.AT_LIMIT_BOUNCE, bounce_event))
+        self.rect.go()
+
+    def update(self):
+        super().update()
+        self.rect.move_physics()
+
+# --------------------------------------------------
+
+
+class Manager_Ball(cdkk.SpriteManager):
+    def __init__(self, limits, total, at_a_time):
+        super().__init__("Ball Manager")
+        self._limits = limits
+        self._at_a_time = at_a_time
+        self._total = total
+        self.balls_left = total
+        self.add_balls()
+
+    def add_balls(self):
+        current_balls = len(self.sprites())
+        new_balls = self._at_a_time - current_balls
+        if new_balls > self.balls_left:
+            new_balls = self.balls_left
+
+        for i in range(new_balls):
+            value = random.randint(1, len(Sprite_Ball.files))
+            ball = Sprite_Ball(value, self._limits)
+            self.add(ball)
+            self.balls_left -= 1
+
+    def start_game(self):
+        super().start_game()
+        self.balls_left = self._total
+        self.add_balls()
+
+    def end_game(self):
+        self.balls_left = 0
+        self.empty()
+        super().end_game()
+
+    def update(self):
+        super().update()
+        sprite_collisions = self.find_collisions()
+        for sprite, rect in sprite_collisions:
+            sprite.rect.dynamic_limit(cdkk.Physics_Limit(
+                rect, cdkk.LIMIT_COLLISION, cdkk.AT_LIMIT_BOUNCE))
+
+    def event(self, e):
+        dealt_with = super().event(e)
+        if not dealt_with and e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "Boundary":
+                if e.at_limit_y & cdkk.AT_LIMIT_BOTTOM:
+                    self.kill_uuid(e.info["ball_id"])
+                    self.add_balls()
+        return dealt_with
+
+    def check_bat_hits(self, bat):
+        for ball in self.sprites():
+            score_event = cdkk.EventManager.gc_event(
+                "UpdateScore", score=ball.value)
+            ball.rect.dynamic_limit(cdkk.Physics_Limit(
+                bat.rect, cdkk.LIMIT_KEEP_OUTSIDE, cdkk.AT_LIMIT_Y_BOUNCE_Y, score_event))
+
+# --------------------------------------------------
+
+
+class Sprite_Bat(cdkk.Sprite):
+    def __init__(self, limits):
+        super().__init__("Bat")
+        self.load_image_from_file("bat.png")
+        self.rect.centerx = limits.width / 2
+        self.rect.top = limits.height * 0.9
+        self.rect.add_limit(cdkk.Physics_Limit(
+            limits, cdkk.LIMIT_KEEP_INSIDE, cdkk.AT_LIMIT_X_HOLD_POS_X))
+
+# --------------------------------------------------
+
+
+class Manager_Bat(cdkk.SpriteManager):
+    def __init__(self, limits, name="Bat Manager"):
+        super().__init__(name)
+        self._bat = Sprite_Bat(limits)
+        self.add(self._bat)
+
+    def event(self, e):
+        dealt_with = False
+        if e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "MouseMotion":
+                x, y = e.info["pos"]
+                self._bat.rect.move_to(x, None)
+                dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class Manager_Scoreboard(cdkk.SpriteManager):
+    def __init__(self, limits, game_time):
+        super().__init__("Scoreboard Manager")
+        self._game_time = game_time
+
+        text_style = {"fillcolour": None, "outlinecolour": None,
+                        "align_horiz": "L", "width": 200, "height": 35}
+
+        tb_score = cdkk.Sprite_TextBox("Score", style=text_style)
+        tb_score.set_text_format("Score: {0}", 0)
+        tb_score.rect.topleft = (limits.left+10, limits.top+5)
+        self.add(tb_score)
+        self.score = 0
+
+        self._timer = cdkk.Timer(self._game_time, cdkk.EVENT_GAME_TIMER_1)
+        tb_time_left = cdkk.Sprite_TextBox("Time Left", style=text_style)
+        tb_time_left.set_text_format("Time Left: {0:0.1f}", 0)
+        tb_time_left.rect.midtop = (
+            limits.left + limits.width*0.5, limits.top+5)
+        self.add(tb_time_left)
+
+        tb_balls_left = cdkk.Sprite_TextBox("Balls Left", style=text_style)
+        tb_balls_left.set_text_format("Balls Left: {0}", 0)
+        tb_balls_left.rect.topright = (limits.right-10, limits.top+5)
+        self.add(tb_balls_left)
+        self.balls_left = 0
+
+        self._game_over = cdkk.Sprite_GameOver(limits)
+        self._game_over.rect.center = (
+            limits.left + limits.width*0.5, limits.top + limits.height*0.5)
+
+    @property
+    def score(self):
+        return self._score
+
+    @score.setter
+    def score(self, new_score):
+        self._score = new_score
+        self.sprite("Score").set_text(self.score)
+
+    @property
+    def balls_left(self):
+        return self._balls_left
+
+    @balls_left.setter
+    def balls_left(self, new_balls_left):
+        self._balls_left = new_balls_left
+        self.sprite("Balls Left").set_text(self.balls_left)
+
+    def update(self):
+        super().update()
+        self.sprite("Time Left").set_text(self._timer.time_left)
+
+    def start_game(self):
+        super().start_game()
+        self.score = 0
+        self._timer.start()
+        self.remove(self._game_over)  # Hide Game Over
+
+    def end_game(self):
+        self.add(self._game_over)  # Display Game Over
+        super().end_game()
+
+    def event(self, e):
+        dealt_with = False
+        if e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "UpdateScore":
+                self.score += e.info["score"]
+                dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class Manager_Court(cdkk.SpriteManager):
+    def __init__(self, limits):
+        super().__init__("Court")
+
+        court_style = {"fillcolour": "cadetblue3", "outlinecolour": "black"}
+        court = cdkk.Sprite_Shape("Court", limits, court_style)
+        self.add(court)
+
+# --------------------------------------------------
+
+
+class MyGame(cdkk.PyGameApp):
+    def init(self):
+        super().init()
+        court = cdkk.cdkkRect(
+            20, 20, (self.boundary.width-40), self.boundary.height-40)
+        self._court_mgr = Manager_Court(court)
+        self.add_sprite_mgr(self._court_mgr)
+        self._ball_mgr = Manager_Ball(court, 10, 3)
+        self.add_sprite_mgr(self._ball_mgr)
+        self._bat_mgr = Manager_Bat(court)
+        self.add_sprite_mgr(self._bat_mgr)
+        self._scoreboard_mgr = Manager_Scoreboard(court, 15)
+        self.add_sprite_mgr(self._scoreboard_mgr)
+
+        key_map = {
+            pygame.K_q: "Quit",
+            pygame.K_s: "StartGame"
+        }
+        self.event_mgr.event_map(key_event_map=key_map)
+        self.event_mgr.user_event(cdkk.EVENT_GAME_TIMER_1, "GameOver")
+
+    def update(self):
+        super().update()
+        bat = self.sprite("Bat Manager", "Bat")
+        self._ball_mgr.check_bat_hits(bat)
+        self._scoreboard_mgr.balls_left = self._ball_mgr.balls_left
+
+
+app_config = {
+    "width": 1200,
+    "height": 920,
+    "background_fill": "burlywood",
+    "caption": "Bouncing Ball",
+    "image_path": "BouncingBall\\Images\\",
+    "auto_start": False,
+}
+
+MyGame(app_config).execute()
+                    </code></pre>
+                </div>
+
+                <!-- -- --  Step 18  -- -- -->
+                <div id="step18" class="step">
+                    <h2>Step 18</h2>
+                    <p>Add the left and right arrow keys to the key map. Modify Manager_Bat to deal with the associated
+                        events by moving the bat. A new settign is added to app_config to enabl auto-repeat.</p>
+                    <pre><code>
+import cdkk
+import random
+import pygame
+
+# --------------------------------------------------
+
+
+class Sprite_Ball(cdkk.Sprite):
+    files = ["ball_red.png", "ball_yellow.png", "ball_green.png", "ball_brown.png",
+                "ball_blue.png", "ball_pink.png", "ball_black.png"]
+
+    def __init__(self, value, limits):
+        super().__init__()
+        self.value = value
+        self.load_image_from_file(self.files[value - 1])
+        self.rect.left = random.randint(limits.width * 0.2, limits.width * 0.8)
+        self.rect.top = 10
+        speed = value * 3 + 5
+        angle = random.randint(45, 135)
+        self.rect.set_speed_angle(speed, angle)
+        self.rect.bounce_cor = self.rect.perfect_bounce
+        bounce_event = cdkk.EventManager.gc_event(
+            "Boundary", ball_id=self.uuid)
+        self.rect.add_limit(cdkk.Physics_Limit(
+            limits, cdkk.LIMIT_KEEP_INSIDE, cdkk.AT_LIMIT_BOUNCE, bounce_event))
+        self.rect.go()
+
+    def update(self):
+        super().update()
+        self.rect.move_physics()
+
+# --------------------------------------------------
+
+
+class Manager_Ball(cdkk.SpriteManager):
+    def __init__(self, limits, total, at_a_time):
+        super().__init__("Ball Manager")
+        self._limits = limits
+        self._at_a_time = at_a_time
+        self._total = total
+        self.balls_left = total
+        self.add_balls()
+
+    def add_balls(self):
+        current_balls = len(self.sprites())
+        new_balls = self._at_a_time - current_balls
+        if new_balls > self.balls_left:
+            new_balls = self.balls_left
+
+        for i in range(new_balls):
+            value = random.randint(1, len(Sprite_Ball.files))
+            ball = Sprite_Ball(value, self._limits)
+            self.add(ball)
+            self.balls_left -= 1
+
+    def start_game(self):
+        super().start_game()
+        self.balls_left = self._total
+        self.add_balls()
+
+    def end_game(self):
+        self.balls_left = 0
+        self.empty()
+        super().end_game()
+
+    def update(self):
+        super().update()
+        sprite_collisions = self.find_collisions()
+        for sprite, rect in sprite_collisions:
+            sprite.rect.dynamic_limit(cdkk.Physics_Limit(
+                rect, cdkk.LIMIT_COLLISION, cdkk.AT_LIMIT_BOUNCE))
+
+    def event(self, e):
+        dealt_with = super().event(e)
+        if not dealt_with and e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "Boundary":
+                if e.at_limit_y & cdkk.AT_LIMIT_BOTTOM:
+                    self.kill_uuid(e.info["ball_id"])
+                    self.add_balls()
+        return dealt_with
+
+    def check_bat_hits(self, bat):
+        for ball in self.sprites():
+            score_event = cdkk.EventManager.gc_event(
+                "UpdateScore", score=ball.value)
+            ball.rect.dynamic_limit(cdkk.Physics_Limit(
+                bat.rect, cdkk.LIMIT_KEEP_OUTSIDE, cdkk.AT_LIMIT_Y_BOUNCE_Y, score_event))
+
+# --------------------------------------------------
+
+
+class Sprite_Bat(cdkk.Sprite):
+    def __init__(self, limits):
+        super().__init__("Bat")
+        self.load_image_from_file("bat.png")
+        self.rect.centerx = limits.width / 2
+        self.rect.top = limits.height * 0.9
+        self.rect.add_limit(cdkk.Physics_Limit(
+            limits, cdkk.LIMIT_KEEP_INSIDE, cdkk.AT_LIMIT_X_HOLD_POS_X))
+
+# --------------------------------------------------
+
+
+class Manager_Bat(cdkk.SpriteManager):
+    def __init__(self, limits, use_mouse, name="Bat Manager"):
+        super().__init__(name)
+        self._use_mouse = use_mouse
+        self._bat = Sprite_Bat(limits)
+        self.add(self._bat)
+
+    def event(self, e):
+        dealt_with = False
+        if e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "MouseMotion" and self._use_mouse:
+                x, y = e.info["pos"]
+                self._bat.rect.move_to(x, None)
+                dealt_with = True
+            if e.action == "BatLeft" and not self._use_mouse:
+                self._bat.rect.move_physics(-25, 0)
+                dealt_with = True
+            if e.action == "BatRight" and not self._use_mouse:
+                self._bat.rect.move_physics(25, 0)
+                dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class Manager_Scoreboard(cdkk.SpriteManager):
+    def __init__(self, limits, game_time):
+        super().__init__("Scoreboard Manager")
+        self._game_time = game_time
+
+        text_style = {"fillcolour": None, "outlinecolour": None,
+                        "align_horiz": "L", "width": 200, "height": 35}
+
+        tb_score = cdkk.Sprite_TextBox("Score", style=text_style)
+        tb_score.set_text_format("Score: {0}", 0)
+        tb_score.rect.topleft = (limits.left+10, limits.top+5)
+        self.add(tb_score)
+        self.score = 0
+
+        self._timer = cdkk.Timer(self._game_time, cdkk.EVENT_GAME_TIMER_1)
+        tb_time_left = cdkk.Sprite_TextBox("Time Left", style=text_style)
+        tb_time_left.set_text_format("Time Left: {0:0.1f}", 0)
+        tb_time_left.rect.midtop = (
+            limits.left + limits.width*0.5, limits.top+5)
+        self.add(tb_time_left)
+
+        tb_balls_left = cdkk.Sprite_TextBox("Balls Left", style=text_style)
+        tb_balls_left.set_text_format("Balls Left: {0}", 0)
+        tb_balls_left.rect.topright = (limits.right-10, limits.top+5)
+        self.add(tb_balls_left)
+        self.balls_left = 0
+
+        self._game_over = cdkk.Sprite_GameOver(limits)
+        self._game_over.rect.center = (
+            limits.left + limits.width*0.5, limits.top + limits.height*0.5)
+
+    @property
+    def score(self):
+        return self._score
+
+    @score.setter
+    def score(self, new_score):
+        self._score = new_score
+        self.sprite("Score").set_text(self.score)
+
+    @property
+    def balls_left(self):
+        return self._balls_left
+
+    @balls_left.setter
+    def balls_left(self, new_balls_left):
+        self._balls_left = new_balls_left
+        self.sprite("Balls Left").set_text(self.balls_left)
+
+    def update(self):
+        super().update()
+        self.sprite("Time Left").set_text(self._timer.time_left)
+
+    def start_game(self):
+        super().start_game()
+        self.score = 0
+        self._timer.start()
+        self.remove(self._game_over)  # Hide Game Over
+
+    def end_game(self):
+        self.add(self._game_over)  # Display Game Over
+        super().end_game()
+
+    def event(self, e):
+        dealt_with = False
+        if e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "UpdateScore":
+                self.score += e.info["score"]
+                dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class Manager_Court(cdkk.SpriteManager):
+    def __init__(self, limits):
+        super().__init__("Court")
+
+        court_style = {"fillcolour": "cadetblue3", "outlinecolour": "black"}
+        court = cdkk.Sprite_Shape("Court", limits, court_style)
+        self.add(court)
+
+# --------------------------------------------------
+
+
+class MyGame(cdkk.PyGameApp):
+    def init(self):
+        super().init()
+        court = cdkk.cdkkRect(
+            20, 20, (self.boundary.width-40), self.boundary.height-40)
+        self._court_mgr = Manager_Court(court)
+        self.add_sprite_mgr(self._court_mgr)
+        self._ball_mgr = Manager_Ball(court, 10, 3)
+        self.add_sprite_mgr(self._ball_mgr)
+        self._bat_mgr = Manager_Bat(court, False)
+        self.add_sprite_mgr(self._bat_mgr)
+        self._scoreboard_mgr = Manager_Scoreboard(court, 15)
+        self.add_sprite_mgr(self._scoreboard_mgr)
+
+        key_map = {
+            pygame.K_q: "Quit",
+            pygame.K_s: "StartGame",
+            pygame.K_LEFT: "BatLeft",
+            pygame.K_RIGHT: "BatRight"
+        }
+        self.event_mgr.event_map(key_event_map=key_map)
+        self.event_mgr.user_event(cdkk.EVENT_GAME_TIMER_1, "GameOver")
+
+    def update(self):
+        super().update()
+        bat = self.sprite("Bat Manager", "Bat")
+        self._ball_mgr.check_bat_hits(bat)
+        self._scoreboard_mgr.balls_left = self._ball_mgr.balls_left
+
+
+app_config = {
+    "width": 1200,
+    "height": 920,
+    "background_fill": "burlywood",
+    "caption": "Bouncing Ball",
+    "image_path": "BouncingBall\\Images\\",
+    "auto_start": False,
+    "key_repeat_time": 30   # msecs (lower=faster)
+}
+
+MyGame(app_config).execute()
+                    </code></pre>
+                </div>
+
+                <!-- -- --  Step 19  -- -- -->
+                <div id="step19" class="step">
+                    <h2>Step 19</h2>
+                    <p>It is now a two player game. The MyGame class has been extended to create 2 of each manager
+                        class. The SpriteManager classes keep track of which player they are for so that the correct
+                        player gets credit for each bounce.</p>
+                    <pre><code>
+import cdkk
+import random
+import pygame
+
+# --------------------------------------------------
+
+
+class Sprite_Ball(cdkk.Sprite):
+    files = ["ball_red.png", "ball_yellow.png", "ball_green.png", "ball_brown.png",
+                "ball_blue.png", "ball_pink.png", "ball_black.png"]
+
+    def __init__(self, value, limits):
+        super().__init__()
+        self.value = value
+        self.load_image_from_file(self.files[value - 1])
+        self.rect.left = random.randint(limits.width * 0.2, limits.width * 0.8)
+        self.rect.top = 10
+        speed = value * 3 + 5
+        angle = random.randint(45, 135)
+        self.rect.set_speed_angle(speed, angle)
+        self.rect.bounce_cor = self.rect.perfect_bounce
+        bounce_event = cdkk.EventManager.gc_event(
+            "Boundary", ball_id=self.uuid)
+        self.rect.add_limit(cdkk.Physics_Limit(
+            limits, cdkk.LIMIT_KEEP_INSIDE, cdkk.AT_LIMIT_BOUNCE, bounce_event))
+        self.rect.go()
+
+    def update(self):
+        super().update()
+        self.rect.move_physics()
+
+# --------------------------------------------------
+
+
+class Manager_Ball(cdkk.SpriteManager):
+    def __init__(self, limits, total, at_a_time, player_num):
+        super().__init__("Ball Manager", player=player_num)
+        self._limits = limits
+        self._at_a_time = at_a_time
+        self._total = total
+        self.balls_left = total
+        self.add_balls()
+
+    def add_balls(self):
+        current_balls = len(self.sprites())
+        new_balls = self._at_a_time - current_balls
+        if new_balls > self.balls_left:
+            new_balls = self.balls_left
+
+        for i in range(new_balls):
+            value = random.randint(1, len(Sprite_Ball.files))
+            ball = Sprite_Ball(value, self._limits)
+            self.add(ball)
+            self.balls_left -= 1
+
+    def start_game(self):
+        super().start_game()
+        self.balls_left = self._total
+        self.add_balls()
+
+    def end_game(self):
+        self.balls_left = 0
+        self.empty()
+        super().end_game()
+
+    def update(self):
+        super().update()
+        sprite_collisions = self.find_collisions()
+        for sprite, rect in sprite_collisions:
+            sprite.rect.dynamic_limit(cdkk.Physics_Limit(
+                rect, cdkk.LIMIT_COLLISION, cdkk.AT_LIMIT_BOUNCE))
+
+    def event(self, e):
+        dealt_with = super().event(e)
+        if not dealt_with and e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "Boundary":
+                if e.at_limit_y & cdkk.AT_LIMIT_BOTTOM:
+                    self.kill_uuid(e.info["ball_id"])
+                    self.add_balls()
+        return dealt_with
+
+    def check_bat_hits(self, bat):
+        for ball in self.sprites():
+            score_event = cdkk.EventManager.gc_event(
+                "UpdateScore", score=ball.value, player=self.player)
+            ball.rect.dynamic_limit(cdkk.Physics_Limit(
+                bat.rect, cdkk.LIMIT_KEEP_OUTSIDE, cdkk.AT_LIMIT_Y_BOUNCE_Y, score_event))
+
+# --------------------------------------------------
+
+
+class Sprite_Bat(cdkk.Sprite):
+    def __init__(self, limits):
+        super().__init__("Bat")
+        self.load_image_from_file("bat.png")
+        self.rect.centerx = limits.width / 2
+        self.rect.top = limits.height * 0.9
+        self.rect.add_limit(cdkk.Physics_Limit(
+            limits, cdkk.LIMIT_KEEP_INSIDE, cdkk.AT_LIMIT_X_HOLD_POS_X))
+
+# --------------------------------------------------
+
+
+class Manager_Bat(cdkk.SpriteManager):
+    def __init__(self, limits, use_mouse, name="Bat Manager"):
+        super().__init__(name)
+        self._use_mouse = use_mouse
+        self._bat = Sprite_Bat(limits)
+        self.add(self._bat)
+
+    def event(self, e):
+        dealt_with = False
+        if e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "MouseMotion" and self._use_mouse:
+                x, y = e.info["pos"]
+                self._bat.rect.move_to(x, None)
+                dealt_with = True
+            if e.action == "BatLeft" and not self._use_mouse:
+                self._bat.rect.move_physics(-25, 0)
+                dealt_with = True
+            if e.action == "BatRight" and not self._use_mouse:
+                self._bat.rect.move_physics(25, 0)
+                dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class Manager_Scoreboard(cdkk.SpriteManager):
+    def __init__(self, limits, game_time, player_num):
+        super().__init__("Scoreboard Manager", player=player_num)
+        self._game_time = game_time
+
+        text_style = {"fillcolour": None, "outlinecolour": None,
+                        "align_horiz": "L", "width": 200, "height": 35}
+
+        tb_score = cdkk.Sprite_TextBox("Score", style=text_style)
+        tb_score.set_text_format("Score: {0}", 0)
+        tb_score.rect.topleft = (limits.left+10, limits.top+5)
+        self.add(tb_score)
+        self.score = 0
+
+        self._timer = cdkk.Timer(self._game_time, cdkk.EVENT_GAME_TIMER_1)
+        tb_time_left = cdkk.Sprite_TextBox("Time Left", style=text_style)
+        tb_time_left.set_text_format("Time Left: {0:0.1f}", 0)
+        tb_time_left.rect.midtop = (limits.left + limits.width*0.5, limits.top+5)
+        self.add(tb_time_left)
+
+        tb_balls_left = cdkk.Sprite_TextBox("Balls Left", style=text_style)
+        tb_balls_left.set_text_format("Balls Left: {0}", 0)
+        tb_balls_left.rect.topright = (limits.right-10, limits.top+5)
+        self.add(tb_balls_left)
+        self.balls_left = 0
+
+        self._game_over = cdkk.Sprite_GameOver(limits)
+        self._game_over.rect.center = (limits.left + limits.width*0.5, limits.top + limits.height*0.5)
+
+    @property
+    def score(self):
+        return self._score
+
+    @score.setter
+    def score(self, new_score):
+        self._score = new_score
+        self.sprite("Score").set_text(self.score)
+
+    @property
+    def balls_left(self):
+        return self._balls_left
+
+    @balls_left.setter
+    def balls_left(self, new_balls_left):
+        self._balls_left = new_balls_left
+        self.sprite("Balls Left").set_text(self.balls_left)
+
+    def update(self):
+        super().update()
+        self.sprite("Time Left").set_text(self._timer.time_left)
+
+    def start_game(self):
+        super().start_game()
+        self.score = 0
+        self._timer.start()
+        self.remove(self._game_over)  # Hide Game Over
+
+    def end_game(self):
+        self.add(self._game_over)  # Display Game Over
+        super().end_game()
+
+    def event(self, e):
+        dealt_with = False
+        if e.type == cdkk.EVENT_GAME_CONTROL:
+            if e.action == "UpdateScore":
+                if e.info["player"] == self.player:
+                    self.score += e.info["score"]
+                    dealt_with = True
+        return dealt_with
+
+# --------------------------------------------------
+
+
+class Manager_Court(cdkk.SpriteManager):
+    def __init__(self, limits):
+        super().__init__("Court")
+
+        court_style = {"fillcolour": "cadetblue3", "outlinecolour": "black"}
+        court = cdkk.Sprite_Shape("Court", limits, court_style)
+        self.add(court)
+
+# --------------------------------------------------
+
+
+class MyGame(cdkk.PyGameApp):
+    def init(self):
+        super().init()
+        court1 = cdkk.cdkkRect(
+            10, 10, (self.boundary.width/2-30), self.boundary.height-20)
+        court2 = cdkk.cdkkRect(
+            self.boundary.width/2+5, 10, (self.boundary.width/2-30), self.boundary.height-20)
+
+        self._court_mgr1 = Manager_Court(court1)
+        self._court_mgr2 = Manager_Court(court2)
+        self.add_sprite_mgr(self._court_mgr1)
+        self.add_sprite_mgr(self._court_mgr2)
+
+        self._ball_mgr1 = Manager_Ball(court1, 10, 3, 1)
+        self._ball_mgr2 = Manager_Ball(court2, 10, 3, 2)
+        self.add_sprite_mgr(self._ball_mgr1)
+        self.add_sprite_mgr(self._ball_mgr2)
+
+        self._bat_mgr1 = Manager_Bat(court1, False)
+        self._bat_mgr2 = Manager_Bat(court2, True)
+        self._bat_mgr1.set_config("player", 1)
+        self._bat_mgr2.set_config("player", 2)
+        self.add_sprite_mgr(self._bat_mgr1)
+        self.add_sprite_mgr(self._bat_mgr2)
+
+        self._scoreboard_mgr1 = Manager_Scoreboard(court1, 15, 1)
+        self._scoreboard_mgr2 = Manager_Scoreboard(court2, 15, 2)
+        self.add_sprite_mgr(self._scoreboard_mgr1)
+        self.add_sprite_mgr(self._scoreboard_mgr2)
+
+        key_map = {
+            pygame.K_q: "Quit",
+            pygame.K_s: "StartGame",
+            pygame.K_LEFT: "BatLeft",
+            pygame.K_RIGHT: "BatRight"
+        }
+        self.event_mgr.event_map(key_event_map=key_map)
+        self.event_mgr.user_event(cdkk.EVENT_GAME_TIMER_1, "GameOver")
+
+    def update(self):
+        super().update()
+        bat1 = self.sprite("Bat Manager", "Bat", player=1)
+        self._ball_mgr1.check_bat_hits(bat1)
+
+        bat2 = self.sprite("Bat Manager", "Bat", player=2)
+        self._ball_mgr2.check_bat_hits(bat2)
+
+        self._scoreboard_mgr1.balls_left = self._ball_mgr1.balls_left
+        self._scoreboard_mgr2.balls_left = self._ball_mgr2.balls_left
+
+
+app_config = {
+    "width": 1200,
+    "height": 920,
+    "background_fill": "burlywood",
+    "caption": "Bouncing Ball",
+    "image_path": "BouncingBall\\Images\\",
+    "auto_start": False,
+    "key_repeat_time":30   # msecs (lower=faster)
+}
+
+MyGame(app_config).execute()
+                    </code></pre>
+                </div>
+
+                <!-- -- --  Step 20  -- -- -->
+                <div id="step20" class="step">
+                    <h2>Step 20</h2>
+                    <p>Added a splash screen on start up</p>
+                    <pre><code>
+        code here
+                    </code></pre>
+                    <h3>Try</h3>
+                    <ul>
+                        <li>a</li>
+                        <li>b</li>
+                        <li>c</li>
+                    </ul>
+                </div>
+
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

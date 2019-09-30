@@ -1,5 +1,3 @@
-# Game Over / Start Game; balls_left to property
-
 import cdkk
 import pygame
 import random

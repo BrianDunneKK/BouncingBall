@@ -1,7 +1,3 @@
-# The Sprite_Ball class is now initialised with a velocity. The new update()
-# method is called every game loop. It calculates the new positon of the sprite
-# based on its velocity.
-
 import cdkk
 import pygame
 

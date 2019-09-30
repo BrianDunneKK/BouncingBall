@@ -1,10 +1,3 @@
-# The MyGame class passes the size of the window when creating Manager_Ball,
-# and it passes the size to Sprite_Ball.
-# The __init__() method in Sprite_Ball adds a limit to its movement, bouncing
-# off the window boundary. The ball now moves at a random angle and the X
-# position is spread across the width of the window. The speed of the ball is
-# now based on its value.
-
 import cdkk
 import pygame
 import random

@@ -1,10 +1,3 @@
-# The class Manager_Ball will manage all of the sprites on screen. For now, it
-# creates a single sprite, loads an image and positions it. The add() method
-# makes the sprite visible.
-
-# The MyGame class has an initialisation method that creates the Manager_Ball
-# sprite manager.
-
 import cdkk
 
 

@@ -1,13 +1,3 @@
-# The MyGame class now includes a keyboard map that converts keystrokes to
-# event actions e.g. the down arrow is mapped to the action "MoveDown".
-
-# The Manager_Ball class deals with this action. Based on the acion, it decides
-# what to do with the sprites. In response to the "MoveDown" action, it tells
-# the Ball sprite to move down.
-
-# The Sprite_Ball has a new method that changes its Y value, moving it down the
-# screen.
-
 import cdkk
 import pygame
 

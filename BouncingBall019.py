@@ -1,10 +1,3 @@
-# It is now a two player game. The MyGame class has been extended to create 2 of
-# each manager class. The SpriteManager classes keep track of which player they
-# are for so that the correct player gets credit for each bounce.
-
-# import sys
-# sys.path.append("pygame-cdkk")
-
 import cdkk
 import random
 import pygame

@@ -1,7 +1,3 @@
-# The Sprite_Ball class contains an array of 7 files names - one for every
-# snooker ball. The __init__() method takes the ball value and it maps this to
-# the filename. Also the balls X position is chosen randomly.
-
 import cdkk
 import pygame
 import random

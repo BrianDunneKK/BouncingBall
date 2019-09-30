@@ -1,7 +1,3 @@
-# Add the left and right arrow keys to the key map. Modify Manager_Bat to deal
-# with the associated events by moving the bat. A new settign is added to
-# app_config to enabl auto-repeat.
-
 import cdkk
 import random
 import pygame

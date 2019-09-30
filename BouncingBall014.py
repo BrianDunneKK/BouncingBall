@@ -1,10 +1,3 @@
-# A new Manager_Scoreboard calls is added to the score, the time left and the
-# number of balls left. The class keeps track of the timer and posts the event
-# EVENT_GAME_TIMER_1; this event isn't dealt with yet. The update() method is
-# called every game loop and it updates the time left.
-# Ne wcode in the update() method in MyGame copies the number of balls left from
-# the Manager_Ball to the Manager_Scoreboard.
-
 import cdkk
 import pygame
 import random

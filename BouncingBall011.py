@@ -1,9 +1,3 @@
-# The update() method in the MyGame is called every game loop. It finds the bat
-# sprite and passes it to the new check_for_hits() method in the Manager_Bat
-# class.
-# The check_for_hits() method create a "dynamic limit" that causes the ball to
-# bounce off of the bat.
-
 import cdkk
 import pygame
 import random

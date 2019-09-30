@@ -1,11 +1,3 @@
-# The key "b" is mapped to a new action called "CreateBall".
-# The Manager_Ball deals with CreateBall by creating a new ball each time the
-# event action is received. The colour of the ball is now random.
-# The __init__() method in Sprite_Ball now calls go() so that the ball starts
-# moving as soon as it is created.
-# The start_game() and move_down() methods in Sprite_Ball are not needed any
-# more and are deleted.
-
 import cdkk
 import pygame
 import random

@@ -1,8 +1,3 @@
-# Two new classes have been added: Sprite_Bat is the sprite for the bat and
-# Manager_Bat will manage this srite. The Manager_Bat moves the sprite in
-# response to the mouse. The Sprite_Bat is limited to the window.
-# The MyGame class create the Manager_Bat, which then creates the Sprite_Bat.
-
 import cdkk
 import pygame
 import random
