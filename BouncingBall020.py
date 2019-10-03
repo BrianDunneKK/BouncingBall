@@ -1,11 +1,6 @@
-# Added a splash screen
+# Added a splash screen. Use a joystick to control player 1.
 
-# 020: Final version - user-selected ball speed; joystick support
 # To Do: Add **info_items to event_map
-
-import sys
-# sys.path.append("pygame-cdkk")
-sys.path.append('m:\\Google Drive\\Projects\\CoderDojo\\GitHub\\pygame-cdkk')
 
 import cdkk
 import pygame
@@ -111,25 +106,28 @@ class Sprite_Bat(cdkk.Sprite):
 
 
 class Manager_Bat(cdkk.SpriteManager):
-    def __init__(self, limits, use_mouse, name="Bat Manager"):
-        super().__init__(name)
-        self._use_mouse = use_mouse
+    def __init__(self, limits, control_type, name="Bat Manager"):
+        super().__init__(name, control_type=control_type)
         self._bat = Sprite_Bat(limits)
         self.add(self._bat)
 
     def event(self, e):
         dealt_with = False
         if e.type == cdkk.EVENT_GAME_CONTROL:
-            if e.action == "MouseMotion" and self._use_mouse:
+            if e.action == "MouseMotion" and self.use_mouse:
                 x, y = e.info["pos"]
                 self._bat.rect.move_to(x, None)
                 dealt_with = True
-            if e.action == "BatLeft" and not self._use_mouse:
+            if e.action == "BatLeft" and self.use_keyboard:
                 self._bat.rect.move_physics(-25, 0)
                 dealt_with = True
-            if e.action == "BatRight" and not self._use_mouse:
+            if e.action == "BatRight" and not self.use_keyboard:
                 self._bat.rect.move_physics(25, 0)
                 dealt_with = True
+            if e.action == "JoystickMotion" and self.use_joystick:
+                x = e.info.get("pos",0)
+                if e.info["axis"] == "X":
+                    self._bat.rect.move_to(x, None)
         return dealt_with
 
 # --------------------------------------------------
@@ -247,8 +245,8 @@ class MyGame(cdkk.PyGameApp):
         self.add_sprite_mgr(self._ball_mgr1)
         self.add_sprite_mgr(self._ball_mgr2)
 
-        self._bat_mgr1 = Manager_Bat(court1, False)
-        self._bat_mgr2 = Manager_Bat(court2, True)
+        self._bat_mgr1 = Manager_Bat(court1, cdkk.CONTROL_JOYSTICK)
+        self._bat_mgr2 = Manager_Bat(court2, cdkk.CONTROL_MOUSE)
         self._bat_mgr1.set_config("player", 1)
         self._bat_mgr2.set_config("player", 2)
         self.add_sprite_mgr(self._bat_mgr1)
@@ -270,6 +268,7 @@ class MyGame(cdkk.PyGameApp):
         self.event_mgr.event_map(key_event_map=key_map)
         self.event_mgr.user_event(cdkk.EVENT_GAME_TIMER_1, "GameOver")
         self.event_mgr.user_event(cdkk.EVENT_GAME_TIMER_2, "ClearSplash")
+        self.config_joystick(court1)
 
     def update(self):
         super().update()
@@ -290,7 +289,8 @@ app_config = {
     "caption": "Bouncing Ball",
     "image_path": "BouncingBall\\Images\\",
     "auto_start": False,
-    "key_repeat_time": 30   # msecs (lower=faster)
+    "key_repeat_time": 30,   # msecs (lower=faster)
+    "joystick_number": 0
 }
 
 MyGame(app_config).execute()
